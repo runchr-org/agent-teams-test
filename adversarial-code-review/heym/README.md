@@ -6,6 +6,8 @@ A 4-agent multi-agent system for [heym](https://heym.run) (v0.0.9+) that perform
 
 This template depends on heym v0.0.9's node-as-tool feature. Thanks to [@heymrun](https://github.com/heymrun) for shipping that capability; the architecture isn't possible without it.
 
+![heym workflow canvas](screenshots/workflow_canvas.png)
+
 ---
 
 ## Prerequisites
@@ -145,6 +147,7 @@ Pattern generalizes: orchestrator + N specialists with mode-specific harnesses. 
 - `skills/skill_code.md` — drop into implementerAgent's Skills slot
 - `skills/skill_anti_deception.md` — drop into reviewerAgent's Skills slot
 - `system_prompts.md` — paste-ready system prompts for all four agents
+- `screenshots/workflow_canvas.png` — annotated heym canvas (the diagram above)
 
 ---
 
