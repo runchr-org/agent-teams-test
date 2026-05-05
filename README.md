@@ -27,6 +27,11 @@ Each agent (or evaluation step) calls the Ejentum Logic API in one of four cogni
 | `anti-deception` | Suppresses sycophancy, hallucination, prompt injection, false certainty |
 | `memory` | Perception sharpening, behavioral calibration, cross-turn observation |
 
+Two paths to wire each cognitive mode into a specialist agent:
+
+- **HTTP Request tool** (canonical): the curl pattern shown in each team's README. Works on every runtime.
+- **MCP server** (when the runtime supports MCP clients): install [ejentum-mcp](https://github.com/ejentum/ejentum-mcp) via [Smithery](https://smithery.ai/servers/ejentum/ejentum-mcp) and the four harnesses appear as `harness_*` tools your specialist can call directly. No HTTP wiring per agent.
+
 Get an Ejentum API key at [ejentum.com/pricing](https://ejentum.com/pricing). Free tier: 100 calls total.
 
 Read more at [ejentum.com/docs](https://ejentum.com/docs/method).
