@@ -4,6 +4,8 @@
 
 A 4-agent multi-agent system for [heym](https://heym.run) (v0.0.9+) that performs adversarial code review. See the [team overview](../README.md) for the architecture and goal-tuning context.
 
+> **What's heym?** An open-source multi-agent workflow platform (think n8n, but with first-class agent primitives): sub-agent delegation, agent memory graphs, and node-as-tool wiring where any node on the canvas can be exposed to an agent as a callable tool. Self-hostable via Docker. The repo lives at [github.com/heymrun/heym](https://github.com/heymrun/heym).
+
 This template depends on heym v0.0.9's node-as-tool feature. Thanks to [@heymrun](https://github.com/heymrun) for shipping that capability; the architecture isn't possible without it.
 
 ![heym workflow canvas](screenshots/workflow_canvas.png)
