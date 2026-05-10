@@ -8,6 +8,8 @@ The team uses **cross-lab agent diversity** (Anthropic + OpenAI + Zhipu) and thr
 
 > **What this is for:** any agent runtime that needs pushback before committing to a non-trivial decision — coding agents (Claude Code, Cursor, Codex Cloud), autonomous agent loops, multi-agent systems, ops automation, security incident response, strategic decisions. **Not for:** per-step linting (latency 50-80s, cost 3 LLM calls + 3 harness calls per invocation makes this a high-stakes-decisions tool, not a continuous-feedback tool).
 
+![heym workflow canvas](./heym/screenshots/workflow_canvas.png)
+
 ---
 
 ## Architecture
