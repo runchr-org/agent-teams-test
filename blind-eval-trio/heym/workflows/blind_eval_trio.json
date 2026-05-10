@@ -1,0 +1,292 @@
+{
+  "nodes": [
+    {
+      "id": "node_1778361203864_uycvyc9se",
+      "type": "textInput",
+      "position": {
+        "x": 105,
+        "y": 240
+      },
+      "data": {
+        "label": "start",
+        "value": "",
+        "inputFields": [
+          {
+            "key": "text"
+          }
+        ],
+        "status": "success"
+      }
+    },
+    {
+      "id": "node_1778361215968_k8u4k2c6d",
+      "type": "agent",
+      "position": {
+        "x": 360,
+        "y": 120
+      },
+      "data": {
+        "label": "steelmanAgent",
+        "model": "openai/gpt-5-nano",
+        "temperature": 0.7,
+        "systemInstruction": "You are the steelman evaluator in a 3-agent blind eval team. The other two evaluators do not see your output and you do not see theirs.\n\nYour role: build the STRONGEST case for the submitted method. Name what is defensible, what is well-fitted to the task, what makes the agent's chosen approach reasonable.\n\nHARD RULE 1 (tool lockout): You may ONLY call the `harness_reasoning` tool. You may NOT call `harness_code`, `harness_anti_deception`, or `harness_memory`. Calling any tool other than `harness_reasoning` is a protocol violation.\n\nHARD RULE 2 (advocacy posture): name only defensible aspects. Do not include concerns, caveats, or \"but\" clauses. No smuggled critique. If nothing is defensible, return exactly: \"No defensible aspects found.\" Do not soften this with explanations.\n\nProcess:\n1. Call harness_reasoning with a 1-2 sentence query specific to the task\n2. Follow the returned scaffold internally. Do NOT echo bracket labels (NEGATIVE GATE, PROCEDURE, etc.) or harness vocabulary in your output.\n3. Write your evaluation as two sections:\n   - Defensible aspects: (concrete points)\n   - Why this method fits the task: (specific reasoning)\n\nOutput format: plain text, two sections as above. No JSON, no markdown headers beyond the two section names.\n",
+        "userMessage": "$input.text",
+        "tools": [],
+        "mcpConnections": [
+          {
+            "id": "2123051e-a318-442d-ad7f-a16d657451bc",
+            "transport": "stdio",
+            "label": "ejentum",
+            "timeoutSeconds": 30,
+            "command": "npx",
+            "args": "[\"-y\", \"ejentum-mcp\"]",
+            "env": "{\"EJENTUM_API_KEY\": \"<your-ejentum-api-key>\"}"
+          }
+        ],
+        "toolTimeoutSeconds": 30,
+        "maxToolIterations": 30,
+        "isOrchestrator": false,
+        "subAgentLabels": [],
+        "hitlEnabled": false,
+        "hitlSummary": "",
+        "credentialId": "e223bd5d-3581-474a-bb33-c75706f21199",
+        "isReasoningModel": true,
+        "reasoningEffort": "high",
+        "skills": [],
+        "active": true,
+        "status": "success"
+      }
+    },
+    {
+      "id": "node_1778361234387_kmtbma7c4",
+      "type": "agent",
+      "position": {
+        "x": 345,
+        "y": 240
+      },
+      "data": {
+        "label": "stresstestAgent",
+        "model": "anthropic/claude-opus-4",
+        "temperature": 0,
+        "systemInstruction": "You are the stress-test evaluator in a 3-agent blind eval team. The other two evaluators do not see your output and you do not see theirs.\n\nYour role: find where the submitted method BREAKS. Failure modes, edge cases, hidden assumptions that could fail, concrete scenarios where the method produces a wrong outcome.\n\nHARD RULE 1 (tool lockout): You may ONLY call the `harness_anti_deception` tool. You may NOT call `harness_reasoning`, `harness_code`, or `harness_memory`. Calling any tool other than `harness_anti_deception` is a protocol violation.\n\nHARD RULE 2 (failure posture): focus on failure. Do not name strengths. Do not soften concerns with \"to be fair\" or \"however.\" Each failure mode must include a concrete breaking scenario, not a generic warning.\n\nProcess:\n1. Call harness_anti_deception with a 1-2 sentence query specific to the task.\n2. Follow the returned scaffold internally. Do NOT echo bracket labels.\n3. Write your evaluation as two sections:\n   - Failure modes: (each with severity high/medium/low and a concrete scenario where it triggers)\n   - Hidden assumptions: (assumptions the agent treated as facts)\n\nOutput format: plain text, two sections as above.\n",
+        "userMessage": "$input.text",
+        "tools": [],
+        "mcpConnections": [
+          {
+            "id": "3574b50f-1f73-4393-9285-9d75bce370af",
+            "transport": "stdio",
+            "label": "ejentum",
+            "timeoutSeconds": 30,
+            "command": "npx",
+            "args": "[\"-y\", \"ejentum-mcp\"]",
+            "env": "{\"EJENTUM_API_KEY\": \"<your-ejentum-api-key>\"}"
+          }
+        ],
+        "toolTimeoutSeconds": 30,
+        "maxToolIterations": 30,
+        "isOrchestrator": false,
+        "subAgentLabels": [],
+        "hitlEnabled": false,
+        "hitlSummary": "",
+        "credentialId": "e223bd5d-3581-474a-bb33-c75706f21199",
+        "isReasoningModel": false,
+        "skills": [
+          {
+            "id": "7e2b484c-aebf-4620-97e7-d0eb08f361d0",
+            "name": "chaos_engineering_skill",
+            "content": "---\nname: chaos-engineering\ndescription: Apply chaos engineering principles when the user asks you to design failure experiments, audit a production system for resilience, plan a game day, identify single points of failure, or analyze how a distributed system behaves under degraded conditions. Triggers on prompts about reliability testing, fault injection, blast radius, steady-state behavior, dependency failure, latency injection, or \"what could go wrong\" reviews of production architectures.\n---\n\n# Chaos Engineering Skill\n\nThis skill teaches you to think like a chaos engineer when a user asks you to design experiments, audit resilience, or stress-test architectural assumptions. Chaos engineering is the discipline of experimenting on a system in order to build confidence in its capability to withstand turbulent conditions in production.\n\nWithout this skill, your default response to \"is my system resilient?\" is to enumerate generic best practices (add retries, add circuit breakers, etc.). With this skill, you design specific falsifiable experiments that produce evidence rather than recommendations, and you specify the operational discipline required to run them safely.\n\n---\n\n## WHEN TO ACTIVATE\n\nApply this skill when the user's request matches any of these patterns:\n\n- Designing or planning a chaos experiment, fault-injection test, or game day\n- Auditing a system architecture for hidden single points of failure\n- Asking what happens to a system under network partition, dependency failure, latency spike, or resource exhaustion\n- Reviewing post-incident reports to identify experiments that would have caught the failure earlier\n- Evaluating whether a system's claimed resilience is actually verified or only assumed\n- Designing failure-recovery runbooks where the underlying failure modes haven't been tested\n\nSkip this skill (proceed normally) for: simple performance tuning, code reviews unrelated to resilience, or feature work where production-failure modes aren't in scope.\n\n---\n\n## FOUNDATIONAL MENTAL MODELS\n\nBefore applying any procedure, you must hold three mental models. The procedure presupposes them; without these models, the experiment design degenerates into pattern-matching.\n\n### Steady-state thinking\n\nNot \"the system is up.\" Not \"no errors in the dashboard.\" A measurable observable pattern that characterizes healthy behavior over time, expressed as a falsifiable claim.\n\nExamples of valid steady-state hypotheses:\n- \"P99 latency for the /checkout endpoint stays under 800ms during business hours\"\n- \"Order completion rate stays above 99.5% in 5-minute rolling windows\"\n- \"No more than 0.1% of cart-add events drop into the dead-letter queue\"\n\nExamples of invalid hypotheses (treat as red flags from the user):\n- \"The system stays up\" (binary; not measurable as a distribution)\n- \"Users don't notice anything\" (not observable from telemetry)\n- \"Errors stay low\" (no threshold; can't be falsified)\n\nIf the user cannot articulate steady state in measurable terms, your first contribution is forcing them to. The experiment cannot succeed or fail against a vague target.\n\n### Blast-radius thinking\n\nNot \"how much can break.\" The MINIMUM exposure that produces meaningful learning. A chaos experiment is a controlled experiment, not a planned outage. The right blast radius:\n\n- Starts at 1% of traffic, ramps to 5%, 10%; never starts at 100%\n- Touches a single contained service, user cohort, or data partition\n- Has an explicit automatic abort condition (a measurable threshold, not \"we'll watch\")\n- Is time-bounded (15 minutes max for first runs, hours only after multiple successful iterations)\n\nDefining blast radius post-hoc, after running the experiment, is failure. The radius must be specified before the perturbation begins.\n\n### Perturbation-matching\n\nNot \"what failures could happen.\" The failure pattern that matches the user's actual production fear. The user almost always already has a hypothesis (\"the database might be slow when X happens\"); the experiment should test THAT specific hypothesis, not a generic failure mode you happen to know about.\n\nMatch the perturbation to the user's stated worry:\n- \"What happens if the DB is slow\" → inject network latency between app and DB. NOT killing the DB process (different recovery path).\n- \"What happens if a region fails\" → simulate AZ failure with traffic routing. NOT just killing instances.\n- \"What happens at peak load\" → load injection. NOT failure injection at all (different category of test).\n\nLooking under the streetlamp, where the failure modes you know about happen to live, is the most common chaos-engineering anti-pattern. Resist it.\n\n---\n\n## THE FOUR-PHASE EXPERIMENT PROCEDURE\n\nEvery chaos engineering response from you should walk through these four phases explicitly. Do not skip phases or collapse them.\n\n### Phase 1: Hypothesize the steady state\n\nSee **Steady-state thinking** in Foundational Mental Models. The hypothesis must be falsifiable and measurable BEFORE any perturbation. If the user has not stated one, force the conversation back here before continuing.\n\n### Phase 2: Design the perturbation\n\nChoose ONE variable to perturb per experiment. Multi-variable perturbations confound which factor caused the failure. The taxonomy of perturbations to consider:\n\n| Layer | Perturbations |\n|---|---|\n| Compute | Kill process, CPU saturation, memory pressure, fork bombs, OOM kill |\n| Network | Latency injection, packet loss, partition (split-brain), DNS resolution failure, connection refusal |\n| State | Disk fill, file corruption, clock skew, cache wipe, replica lag |\n| Application | Kill specific service instance, dependency timeout, response corruption, throttling |\n| Cloud / infra | Availability zone failure, region failure, IAM permission revocation, service quota exhaustion |\n| Data | Schema drift, malformed payload, retroactive backfill |\n\nMatch the perturbation to the user's actual fear (see Perturbation-Matching above).\n\n### Phase 3: Minimize blast radius\n\nApply the constraints from **Blast-radius thinking** in Foundational Mental Models. Two non-negotiables: the blast radius is specified BEFORE injection (post-hoc definition is failure), and the abort condition is a measurable threshold with a time window (not \"we'll watch\"). If the user proposes an experiment without defining the abort condition, refuse to design the rest of it until they specify one.\n\n### Phase 4: Learn the corrective rule\n\nEvery experiment produces one of three outcomes. Each outcome generates a different corrective action.\n\n1. **Hypothesis held**: the system survived. Confidence increased. The experiment is now a candidate for ongoing automation (Chaos Monkey-style continuous runs).\n2. **Hypothesis broke and the failure was understood**: extract the corrective rule (add timeout, bulkhead, fallback path), queue the fix, re-run after fix to verify.\n3. **Hypothesis broke and the failure was not understood**: the system has a hidden coupling. This is the most valuable outcome. Stop. Investigate the coupling before adding more controls. Fixes added without understanding the coupling often introduce a worse failure mode under different perturbations.\n\nSurface all three possibilities in your experiment design, not just outcome 2.\n\n---\n\n## SYSTEM-COUPLING FAILURE AMPLIFIERS\n\nReal systems do not fail at one point and stay there. They have feedback loops that amplify small failures into large ones. When designing experiments, name which amplifier(s) the user's system is most likely vulnerable to, then design the experiment that surfaces that specific amplifier.\n\n**Retry storms.** A downstream slowdown causes upstream retries; retries amplify load on the slow service; service slows further; more retries. Test by injecting 30% latency on a dependency and observing whether upstream retry rate stays bounded (exponential backoff, retry budget, circuit breaker present) or spirals into amplification.\n\n**Thundering herd.** A cache expires or a service restarts; many clients converge on the cold service simultaneously; the cold service overloads from the synchronized rush. Test by killing a heavily-cached upstream during a traffic spike and observing whether request smoothing kicks in (cache warming, request coalescing, staggered restarts).\n\n**Gray failure.** A service is partially failing — slow, returning errors intermittently, leaking memory — but not \"down\" enough to trigger health-check failover. The system thinks the service is healthy; users experience degradation. Test by injecting 10% error rate on a dependency that has connectivity-only health checks and observing whether application-layer health metrics catch the degradation.\n\n**Partition tolerance trade-off (CAP).** When the network partitions, every system must choose: serve possibly-stale data (AP) or refuse to serve (CP). Most systems claim one posture and behave like the other under real partition. Test by simulating split-brain on the database / cache pair and observing whether the application returns stale data, errors out, or degrades gracefully, and whether what it does matches what the team thinks it does.\n\n**Synchronized backoff.** Multiple clients independently retry on the same schedule (minute boundaries are typical); they re-collide on the upstream at the next minute. Looks like a recovering system but is actually a sustained oscillation. Test by injecting a 60-second outage at the top of the minute and observing whether retry timing has jitter or is synchronized.\n\nWhen the user describes a system, identify which amplifier is the highest-probability hidden failure path, then design the experiment that surfaces it directly.\n\n---\n\n## TAIL-RISK THINKING\n\nReasoning in averages misses what matters. The probability the system fails on Tuesday at 2pm is meaningless. The probability it fails when the most exposed user cohort hits the most loaded path during the worst combination of dependency states is what matters. Senior chaos engineers reason in tail-distribution terms.\n\n**P99 / P99.9 thinking.** Don't ask \"what's the average latency.\" Ask \"what does the slowest 1% experience.\" The 99th percentile under load is often 10x the median. If the median is 200ms and P99 is 4 seconds, the system fails for 1% of users every minute under load. Specify the percentile in the steady-state hypothesis explicitly.\n\n**Pessimistic-extreme reasoning.** When estimating perturbation impact, push every variable to its actual worst case (not a comfortable downside): worst load × worst dependency state × worst traffic distribution × worst time of day × least-experienced on-call. If the experiment fails at the conjoined extreme, the system is fragile to compound conditions even when any single perturbation is survivable.\n\n**1-in-N event budgeting.** If the system needs to handle 1-in-1000 events without user impact, the experiment must reproduce 1-in-1000 conditions. Running an experiment 100 times tests against ~1-in-100 events. Calculate explicitly: how many runs of this experiment validate what tail probability?\n\n**Failure-mode independence assumption.** Most resilience claims assume failure modes are independent (\"the chance of two AZs failing simultaneously is 0.01%\"). Real failure modes are correlated through shared infrastructure (power, cooling, deploy pipelines, IAM, control planes). Flag whenever the user's hypothesis assumes independence that may not hold.\n\nResist comforting average-case framing. Force the user to think in tail-distribution terms when designing experiments.\n\n---\n\n## ANTI-PATTERNS\n\nBlock these failure modes in your reasoning:\n\n- **Resilience by recommendation list**: \"add retries, add circuit breakers, add health checks\" without a hypothesis or experiment is theater. Resilience is verified by failure injection, not earned by listing patterns.\n- **Single experiment as a verdict**: one successful chaos run does not certify the system. Resilience claims require continuous experimentation, not one-time audits.\n- **Confounded perturbations**: changing two variables at once means neither result is interpretable. One perturbation per experiment.\n- **No abort condition**: an experiment without a pre-defined abort is a planned outage, not a chaos experiment.\n- **Skipping the hypothesis phase**: if you cannot state in advance what success and failure look like in measurable terms, the experiment cannot teach anything.\n- **Running only in staging**: staging traffic is not production traffic. Failure modes that show up at scale, with real user behavior, cannot be observed without production load.\n\n---\n\n## COMMON FAILURE MODES TO TARGET FIRST\n\nWhen a user asks \"where should I start\" and they have NOT stated a specific fear, suggest these in order. (When the user HAS stated a specific fear, see Perturbation-Matching above; that takes precedence.) Each of these tests a different layer of resilience:\n\n1. **Single dependency timeout**: pick the most-called downstream service. Inject 5-second latency. Watch whether upstream calls cascade or contain.\n2. **Single instance kill**: kill one pod or one VM. Watch failover time, request loss during failover, and whether load balancers correctly evict the dead instance.\n3. **Network partition between two stateful services**: simulate split-brain on the database / cache pair. Watch whether the application returns stale data, errors out, or correctly fails over.\n4. **DNS resolution failure**: block DNS for one upstream service. Most systems fail in surprising ways (e.g., 30-second connect timeouts because of OS-level DNS cache).\n5. **Disk fill on the log volume**: most production failures eventually involve disk-full somewhere. Test the log volume because it's the one most operators forget to monitor.\n\nThese five give a baseline resilience picture in roughly two weeks of incremental work.\n\n---\n\n## META-REFLECTION SELF-CHECK\n\nBefore producing the final response, run a self-check on your own output. The most common failure mode in your reasoning is RESPONSE DRIFT: you start engineering a specific experiment, then revert to listing generic patterns. This drift happens because your training has thousands of examples of generic resilience-list responses and few of specific-experiment responses. Without an explicit self-check, you will drift even when you started right.\n\nRun these five checks before finishing:\n\n1. **Does my response contain a specific, falsifiable hypothesis?** Not \"the system handles failure\" — a measurable claim like \"P99 latency for endpoint X stays under 800ms during the perturbation.\" If absent, rewrite.\n2. **Did I name a single perturbation, not a category?** Not \"test network failures\" — a specific perturbation like \"inject 200ms latency on the payment service for 1% of traffic for 10 minutes.\" If absent, rewrite.\n3. **Did I specify the abort condition pre-hoc, not \"we'll watch\"?** A measurable threshold like \"abort if error rate exceeds 2% within 3 minutes.\" If absent, rewrite.\n4. **Did I default to pattern lists?** If my response contains phrases like \"add retries, add circuit breakers, add health checks\" without an experiment to verify those patterns are needed, I drifted. Rewrite from the experiment outward.\n5. **Did I match the perturbation to the user's actual fear?** Re-read the user's question. The perturbation should test what the user is worried about, not a generic failure I happen to know about. If misaligned, re-design from their hypothesis.\n\nIf any check fails, restart from the failed phase. If three or more fail, you have drifted entirely to recommendation-list mode; abandon the response and start over from \"what is the user actually worried about?\"\n\nThis self-check is gated into the OUTPUT DISCIPLINE section below as step 0. It is not optional.\n\n---\n\n## RUNNING THE EXPERIMENT (OPERATIONAL DISCIPLINE)\n\nDesigning an experiment is half the work. Running one safely in production requires operational discipline most teams underbuild. When the user asks you to design a chaos experiment, your response should also specify the operational requirements they need in place before injection. These are not optional.\n\n**Roles defined before injection** (three different humans, ideally):\n- **Experiment Lead** owns the runbook, decides start/stop, owns the post-mortem\n- **Observer** watches steady-state metrics in real time, no other duty during the window\n- **Abort Authority** holds the kill-switch (can be Lead or separate on-call; comms protocol must specify which)\n\n**Pre-injection readiness gates** (refuse to proceed without all of these):\n- Steady-state metric visible on a live dashboard the Observer is actively watching\n- Abort condition wired to an automated alert, not just human watching\n- Rollback runbook exists and is linked\n- On-call paged with the experiment ID before injection\n- Experiment announced in the comms channel with the time window\n- Ticket exists with hypothesis, perturbation, abort condition, rollback steps\n\n**Comms template** (pin in channel before injection):\n> \"Chaos experiment EXP-NNN starting HH:MM, expected duration N min, blast radius X% of Y service, abort condition Z. Lead: name. Observer: name. Abort: name.\"\n\n**Post-experiment** (within 24h): post-mortem documenting outcome (held / broke-understood / broke-not-understood), corrective rules extracted, fix tickets opened, decision on whether to add to continuous chaos automation.\n\nIf the user proposes a chaos experiment without these gates in place, refuse to design the rest of it until they specify them. A chaos experiment without operational discipline is not a chaos experiment, it is a planned outage.\n\n---\n\n## OUTPUT DISCIPLINE\n\nWhen responding to a chaos engineering request, your reply should follow this structure. **Step 0 is a hard gate; do not emit steps 1-7 until step 0 passes.**\n\n0. **Run the META-REFLECTION SELF-CHECK above against your draft response.** Run all five questions in order. If any check fails, restart from the failed phase. If three or more fail, abandon the response entirely and start over from \"what is the user actually worried about?\" Only proceed to the structured output below after all five self-checks pass.\n1. State the steady-state hypothesis explicitly (one sentence, measurable, with the percentile if relevant).\n2. Name the single perturbation being tested (one variable, with magnitude and duration).\n3. Specify the blast radius and abort condition (concrete percentages, thresholds, time windows).\n4. Specify the operational requirements (roles, readiness gates, comms template) from the RUNNING THE EXPERIMENT section above.\n5. Name the system-coupling amplifier(s) the experiment is targeting (retry storm, thundering herd, gray failure, partition trade-off, synchronized backoff).\n6. List 1-3 most likely failure modes the experiment will surface.\n7. Define the corrective rule template for each likely failure mode.\n\nDo not pad with generic resilience advice. Do not list patterns the user already knows. The value you add is **a specific falsifiable experiment with the operational discipline to run it safely**, not a recap of distributed-systems theory.\n\n---\n\n## WORKED EXAMPLE\n\nUser prompt: *\"Our checkout service occasionally times out under high load. We don't really know why. Can you help us design something to figure it out?\"*\n\nA skill-absorbed agent response:\n\n> Before designing, two things need to be measurable.\n>\n> First, your steady-state hypothesis. \"Occasionally times out\" is not falsifiable. We need: \"P99 latency for /checkout stays under 800ms and error rate stays under 0.5% during business-hours traffic.\" Tell me the actual current numbers and the threshold you'd call degraded.\n>\n> Second, what's your actual fear? \"Times out under high load\" could be three different failure paths: (a) downstream payment gateway slows under load; (b) your own connection-pool exhausts; (c) retry storm amplifying a small downstream slowdown. Each needs a different experiment. Pick one.\n>\n> If I had to bet on (c), here's what I'd run:\n>\n> **Hypothesis:** P99 latency for /checkout stays under 1.5s and error rate stays under 1% when the payment gateway adds 300ms of latency.\n>\n> **Perturbation:** Inject 300ms latency on the payment-gateway dependency, 5% of traffic, 15 minutes, off-peak.\n>\n> **Blast radius / abort:** Single canary cell at 5% of traffic. Abort if checkout error rate exceeds 3% for 2 consecutive minutes, or P99 exceeds 4s. On-call paged with experiment ID before injection.\n>\n> **Operational requirements:** Experiment Lead and Observer named; Observer watching the live P99 latency dashboard for /checkout during the 15-min window; abort condition wired to PagerDuty alert; rollback runbook linked in the ticket; comms template pinned in #incident channel.\n>\n> **Targeted amplifier:** retry storm. Watch whether the payment client's retry rate stays bounded (exponential backoff working) or spirals.\n>\n> **Likely failure modes:** (1) retries amplify load on the slow gateway; (2) upstream thread-pool exhaustion as in-flight requests accumulate; (3) gray failure where connectivity health checks stay green but user-facing latency degrades.\n>\n> **Corrective rule template:** for (1), add retry budget OR circuit breaker at 5% error rate; for (2), upstream timeout shorter than abort threshold; for (3), wire application-level latency into health check.\n>\n> Run once at 5%. If steady state holds, ramp to 10%, then 25%. If it breaks at 5%, you've found real fragility; fix and re-run before broadening.\n\nWhat this response demonstrates: forced measurability, asked perturbation-matching question, named single variable, set explicit abort condition, specified operational discipline, named the targeted amplifier, listed failure modes with corrective rules. No generic \"add circuit breakers\" advice. This is what skill-absorbed output looks like.\n\n---\n\n## REFERENCES (FOR YOUR OWN GROUNDING)\n\nThe principles in this skill are grounded in:\n- Casey Rosenthal et al., *Chaos Engineering* (O'Reilly, 2020)\n- Netflix's published practices around Chaos Monkey, Chaos Kong, and FIT (Failure Injection Testing)\n- Gremlin's game-day design framework\n- Adrian Cockcroft's resilience engineering writing\n- John Allspaw's incident analysis and \"above the line / below the line\" framework\n\nYou do not need to cite these sources to the user unless asked. The grounding informs your reasoning; the user wants the experiment, not the bibliography.\n",
+            "files": [],
+            "timeoutSeconds": 30
+          }
+        ],
+        "active": true,
+        "status": "success"
+      }
+    },
+    {
+      "id": "node_1778361252114_x9sqp0tdw",
+      "type": "agent",
+      "position": {
+        "x": 360,
+        "y": 360
+      },
+      "data": {
+        "label": "gapfinderAgent",
+        "model": "z-ai/glm-4.7",
+        "temperature": 0.9,
+        "systemInstruction": "You are the gap-finder evaluator in a 3-agent blind eval team. The other two evaluators do not see your output and you do not see theirs.\n\nYour role: find what is MISSING. Two things are missing: (a) steps, considerations, alternatives the agent did not include in the method, and (b) depth in the agent's articulation of assumptions and risks.\n\nHARD RULE 1 (tool lockout): You may ONLY call the `harness_memory` tool. You may NOT call `harness_reasoning`, `harness_code`, or `harness_anti_deception`. Calling any tool other than `harness_memory` is a protocol violation.\n\nHARD RULE 2 (articulation critique): include the articulation-quality critique. If assumptions or risks are shallow (\"the user wants this\" / \"it might not work\"), name three deeper assumptions implicit in the agent's steps that the agent failed to surface. Do not skip this section even if the articulation looks fine to you on the surface.\n\nProcess:\n1. Call harness_memory with a 1-2 sentence query specific to the task.\n2. Follow the returned scaffold internally. Do NOT echo bracket labels.\n3. Write your evaluation as three sections:\n   - Missing from method: (steps or considerations not present)\n   - Alternatives not considered: (other valid approaches the agent did not weigh)\n   - Articulation quality: (depth assessment of assumptions and risks; if shallow, name what's actually implicit)\n\nOutput format: plain text, three sections as above.\n",
+        "userMessage": "$input.text",
+        "tools": [],
+        "mcpConnections": [
+          {
+            "id": "a198f07f-d26b-4fa5-8cca-a9f93527ffb6",
+            "transport": "stdio",
+            "label": "ejentum",
+            "timeoutSeconds": 30,
+            "command": "npx",
+            "args": "[\"-y\", \"ejentum-mcp\"]",
+            "env": "{\"EJENTUM_API_KEY\": \"<your-ejentum-api-key>\"}"
+          }
+        ],
+        "toolTimeoutSeconds": 30,
+        "maxToolIterations": 30,
+        "isOrchestrator": false,
+        "subAgentLabels": [],
+        "hitlEnabled": false,
+        "hitlSummary": "",
+        "credentialId": "e223bd5d-3581-474a-bb33-c75706f21199",
+        "isReasoningModel": false,
+        "skills": [],
+        "active": true,
+        "status": "success"
+      }
+    },
+    {
+      "id": "node_1778366352887_1kyij0k18",
+      "type": "set",
+      "position": {
+        "x": 615,
+        "y": 240
+      },
+      "data": {
+        "label": "setFields",
+        "mappings": [
+          {
+            "key": "steelman",
+            "value": "$steelmanAgent.text"
+          },
+          {
+            "key": "stress_test",
+            "value": "$stresstestAgent.text"
+          },
+          {
+            "key": "gap_finder",
+            "value": "$gapfinderAgent.text"
+          },
+          {
+            "key": "usage_note",
+            "value": "Three independent evaluations, no synthesis. Integrate into your decision; do not score-and-aggregate."
+          }
+        ],
+        "status": "success"
+      }
+    },
+    {
+      "id": "node_1778406714443_9ar63f2ua",
+      "type": "sticky",
+      "position": {
+        "x": -270,
+        "y": -105
+      },
+      "data": {
+        "label": "stickyNote",
+        "note": "Blind Eval Trio\nPre-commitment self-evaluation for agent runtimes.\n\n3 cross-lab agents → 3 independent evaluations:\nsteelman (defends), stress_test (attacks), gap_finder (what's missing).\nNo synthesizer — calling agent integrates.\n\n\nStructural integrity\n• 3 model labs → cross-lab decorrelation\n• Tool lockout per role (no role-switching)\n• No synthesizer agent (3 raw outputs)\n• Forced output structure + articulation gate\n\nsteelman\ngpt-5-nano + harness_reasoning\nRole: strongest case FOR the method.\nHard rule: pure advocacy. Zero smuggled critique.\n\nstress_test\nclaude-opus-4 + harness_anti_deception\n\nRole: where the method BREAKS.\nHard rule: severity-tagged failures + concrete scenarios.\n\ngap_finder\nglm-4.7 + harness_memory\n\nRole: what's MISSING (steps + articulation depth).\nHard rule: name 3 deeper implicit assumptions.\n\nOutput: structured JSON\n{ steelman, stress_test, gap_finder, usage_note }\n\nThree voices, no synthesis. Integrate; do not aggregate.",
+        "stickyWidth": 371.56637168141594,
+        "stickyHeight": 749.6548672566372,
+        "status": "success"
+      }
+    },
+    {
+      "id": "node_1778407739894_pvwfqujop",
+      "type": "sticky",
+      "position": {
+        "x": 810,
+        "y": 465
+      },
+      "data": {
+        "label": "stickyNote2",
+        "note": "Built with heym + ejentum -mcp cognitive harness .\nRepo: \ngithub.com/ejentum/agent-teams\nejentum.com\n",
+        "stickyWidth": 333.1740412979351,
+        "stickyHeight": 170.29793510324484,
+        "status": "success"
+      }
+    },
+    {
+      "id": "node_1778408568330_leiayi2a3",
+      "type": "sticky",
+      "position": {
+        "x": 120,
+        "y": 465
+      },
+      "data": {
+        "label": "stickyNote1",
+        "note": "Callable from any agent\n\nheym exposes this workflow as an HTTP endpoint:\nPOST /api/workflows/{id}/execute/stream\n\nSSE events stream as each node completes. Any agent runtime ; \nClaude Code, Cursor, Codex, custom Python — can curl it directly. One workflow, infinite integrations.\n",
+        "status": "success"
+      }
+    },
+    {
+      "id": "node_1778408629381_9ev3zo8hz",
+      "type": "sticky",
+      "position": {
+        "x": 120,
+        "y": -105
+      },
+      "data": {
+        "label": "stickyNote3",
+        "note": "Verified across domains\n\nCaught hidden behavior changes (refactor planning), compliance gaps (payments migration), premature containment (security IR), framing tensions (investigative cases), unvalidated assumptions (strategic decisions including meta-eval of itself).\n\nRole discipline + cross-lab decorrelation generalize. No domain-specific tuning required.\n",
+        "stickyWidth": 631.7916666666666,
+        "stickyHeight": 177.70333333333332,
+        "status": "success"
+      }
+    },
+    {
+      "id": "node_1778410701229_6ilwzj8zn",
+      "type": "sticky",
+      "position": {
+        "x": 810,
+        "y": -90
+      },
+      "data": {
+        "label": "stickyNote4",
+        "note": "Example output\n\nTask: Auto-merge Dependabot PRs after CI passes.\n\nsteelman defends:\n\"Leverages standard platform capabilities; CI gating preserves code quality; uniform across all updates.\"\n\nstress_test attacks (HIGH):\n\"Dependency hijacking — compromised maintainer publishes backdoored version, CI passes (tests don't catch malware payload), auto-merge deploys to production.\"\n\ngap_finder finds:\n\"Missing: scope limiting, version constraints, rollback procedure. 'CI catches breaking changes' silently assumes integration coverage AND env parity AND end-to-end scenarios.\"\n\n→ One agent advocates, one attacks, one finds gaps. Calling agent integrates.\n\n",
+        "stickyWidth": 322.2920353982301,
+        "stickyHeight": 532.9321533923304,
+        "status": "success"
+      }
+    }
+  ],
+  "edges": [
+    {
+      "id": "edge_node_1778361203864_uycvyc9se_node_1778361215968_k8u4k2c6d_1778365617423",
+      "source": "node_1778361203864_uycvyc9se",
+      "target": "node_1778361215968_k8u4k2c6d",
+      "sourceHandle": "output",
+      "targetHandle": "input"
+    },
+    {
+      "id": "edge_node_1778361203864_uycvyc9se_node_1778361234387_kmtbma7c4_1778365622105",
+      "source": "node_1778361203864_uycvyc9se",
+      "target": "node_1778361234387_kmtbma7c4",
+      "sourceHandle": "output",
+      "targetHandle": "input"
+    },
+    {
+      "id": "edge_node_1778361203864_uycvyc9se_node_1778361252114_x9sqp0tdw_1778365633961",
+      "source": "node_1778361203864_uycvyc9se",
+      "target": "node_1778361252114_x9sqp0tdw",
+      "sourceHandle": "output",
+      "targetHandle": "input"
+    },
+    {
+      "id": "edge_node_1778361234387_kmtbma7c4_node_1778366352887_1kyij0k18_1778366358000",
+      "source": "node_1778361234387_kmtbma7c4",
+      "target": "node_1778366352887_1kyij0k18",
+      "sourceHandle": "output",
+      "targetHandle": "input"
+    },
+    {
+      "id": "edge_node_1778361215968_k8u4k2c6d_node_1778366352887_1kyij0k18_1778366362010",
+      "source": "node_1778361215968_k8u4k2c6d",
+      "target": "node_1778366352887_1kyij0k18",
+      "sourceHandle": "output",
+      "targetHandle": "input"
+    },
+    {
+      "id": "edge_node_1778361252114_x9sqp0tdw_node_1778366352887_1kyij0k18_1778366364977",
+      "source": "node_1778361252114_x9sqp0tdw",
+      "target": "node_1778366352887_1kyij0k18",
+      "sourceHandle": "output",
+      "targetHandle": "input"
+    }
+  ]
+}
