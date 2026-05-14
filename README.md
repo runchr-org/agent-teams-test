@@ -33,7 +33,7 @@ Each agent (or evaluation step) calls the Ejentum Logic API in one of four cogni
 Two paths to wire each cognitive mode into a specialist agent:
 
 - **HTTP Request tool** (canonical): the curl pattern shown in each team's README. Works on every runtime.
-- **MCP server** (when the runtime supports MCP clients): install [ejentum-mcp](https://github.com/ejentum/ejentum-mcp) via [Smithery](https://smithery.ai/servers/ejentum/ejentum-mcp) and the four harnesses appear as `harness_*` tools your specialist can call directly. No HTTP wiring per agent.
+- **MCP server** (when the runtime supports MCP clients): use [ejentum-mcp](https://github.com/ejentum/ejentum-mcp). Two install paths: stdio via `npx -y ejentum-mcp` for clients that spawn MCP servers as subprocesses (Claude Desktop, Cursor, Windsurf, Codex CLI, Claude Code), or hosted HTTPS at `https://api.ejentum.com/mcp` for HTTP-MCP clients (n8n MCP Client and others). Either way the four harnesses appear as `harness_*` tools your specialist can call directly. No HTTP wiring per agent.
 
 Get an Ejentum API key at [ejentum.com/pricing](https://ejentum.com/pricing). Free tier: 100 calls total.
 
