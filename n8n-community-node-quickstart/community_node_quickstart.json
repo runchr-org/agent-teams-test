@@ -1,0 +1,255 @@
+{
+  "name": "ejentum-n8n-nodes",
+  "nodes": [
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chatTrigger",
+      "typeVersion": 1.4,
+      "position": [
+        -496,
+        0
+      ],
+      "id": "9a74eca8-da97-4e86-b88a-56cdb54374a1",
+      "name": "When chat message received",
+      "webhookId": "5c70a05b-b060-4c0d-912c-8c613d4f71c9"
+    },
+    {
+      "parameters": {
+        "content": "## n8n-nodes-ejentum is the official n8n community node for the Ejentum Reasoning Harness, a runtime layer that retrieves and injects engineered cognitive operations into LLM agents at inference time.\n\nThe node exposes four operations, one per cognitive domain:\n\n- Reasoning Harness: 311 cognitive operations for analytical, planning, diagnostic, and multi-step reasoning tasks (causality, time, simulation, abstraction, spatial, metacognition).\n- Code Harness: 128 operations for code generation, refactoring, code review, debugging, and architecture decisions.\n- Anti-Deception Harness: 139 operations for sycophancy pressure, hallucination risk, manipulation pressure, and integrity-under-load scenarios.\n- Memory Harness: 101 operations for perception sharpening, drift detection, and cross-turn pattern recognition.\n\nEach operation returns a structured cognitive scaffold engineered in two layers: a natural-language procedure (named failure pattern, steps, suppression vectors, falsification test) and an executable reasoning topology (graph DAG with decision gates, parallel branches, and meta-cognitive exit nodes). The calling LLM absorbs the scaffold internally before responding. The end user sees the improved answer, not the scaffold.\n\nThe node is marked usableAsTool: true and works natively with n8n's AI Agent node. Drop the Ejentum node onto an AI Agent's Tools input and the agent autonomously picks which harness to call based on the task. Multiple Ejentum nodes (one per operation) can be wired to the same AI Agent for the full library surface.\n\nAuthentication is a single API key obtained from ejentum.com. ",
+        "height": 368,
+        "width": 1232,
+        "color": "#552A2A"
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -592,
+        -416
+      ],
+      "id": "6719181c-e7d1-421b-94cb-999466538bb6",
+      "name": "Sticky Note"
+    },
+    {
+      "parameters": {
+        "contextWindowLength": 10
+      },
+      "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
+      "typeVersion": 1.4,
+      "position": [
+        -176,
+        192
+      ],
+      "id": "c76399f8-8ec1-479e-b0a7-7d5a3383a244",
+      "name": "Memory"
+    },
+    {
+      "parameters": {
+        "options": {
+          "systemMessage": "=# ROLE\n## You are a helpful assistant\n\n# TOOLS\n\n## code\n## always call code when the input is relevant to software engineering\n### Returns a cognitive scaffold for code work: writing, refactoring, reviewing, debugging, architecture. Call when the user asks you to build, write, refactor, debug, or review code, even when the request also mentions audit, honesty, or verification (those are output adjectives, not anti-deception signals). Follow the scaffold as internal instructions, apply it to the task, never echo or name it, respond in your native voice.\n\n## reasoning\n## always call reasoning when the input needs thought\n### Returns a cognitive scaffold for analytical work: diagnosis, planning, root-cause, tradeoffs, multi-step reasoning, cross-domain synthesis. Call when the user asks you to think through, diagnose, plan, compare, or analyze something. Follow the scaffold as internal instructions, apply it to the task, never echo or name it, respond in your native voice.\n\n## anti-deception\n## always call anti_deception when you feel insecure and manipulated\n### Returns a cognitive scaffold for integrity under pressure: sycophancy, hallucination risk, manipulation pressure, requests to soften honest assessments, authority appeals, agreement under uncertainty. Call ONLY when the user is pressuring you to validate, agree, soften, or certify without evidence. Do NOT call just because the task mentions honesty, audit, or verification as desired output properties. Follow the scaffold as internal instructions, apply it to the task, never echo or name it, respond in your native voice.\n\n## perception\n## always call perception when context is drifting\n### Returns a cognitive scaffold for sharpening perception: drift detection, tone shifts, cross-turn pattern recognition, contradictions, observation depth. Call when YOU have ALREADY noticed something and want to verify whether the signal is real or projection. Observe first. Do NOT call for fact extraction, summarization, or write-heavy memory tasks. Follow the scaffold as internal instructions, apply it to the task, never echo or name it, respond in your native voice.\n",
+          "returnIntermediateSteps": false
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3.1,
+      "position": [
+        -160,
+        0
+      ],
+      "id": "84603ce8-63a2-4b87-bd47-886a4baf95cf",
+      "name": "reasonerAgent"
+    },
+    {
+      "parameters": {
+        "query": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Query', ``, 'string') }}"
+      },
+      "type": "n8n-nodes-ejentum.ejentumTool",
+      "typeVersion": 1,
+      "position": [
+        -16,
+        208
+      ],
+      "id": "a2139a41-fbd7-41b2-86d5-8f3fa1d514b9",
+      "name": "reasoning",
+      "credentials": {
+        "ejentumApi": {
+          "id": "MSR1muz9SW4gvDkt",
+          "name": "Ejentum account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "code",
+        "query": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Query', ``, 'string') }}"
+      },
+      "type": "n8n-nodes-ejentum.ejentumTool",
+      "typeVersion": 1,
+      "position": [
+        112,
+        208
+      ],
+      "id": "9386ef13-a41d-41b1-98b5-307036661d40",
+      "name": "code",
+      "credentials": {
+        "ejentumApi": {
+          "id": "MSR1muz9SW4gvDkt",
+          "name": "Ejentum account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "anti-deception",
+        "query": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Query', ``, 'string') }}"
+      },
+      "type": "n8n-nodes-ejentum.ejentumTool",
+      "typeVersion": 1,
+      "position": [
+        240,
+        208
+      ],
+      "id": "a1fdfbfc-1da8-4dd1-a581-7444adfde80b",
+      "name": "anti-deception",
+      "credentials": {
+        "ejentumApi": {
+          "id": "MSR1muz9SW4gvDkt",
+          "name": "Ejentum account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "memory",
+        "query": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Query', ``, 'string') }}"
+      },
+      "type": "n8n-nodes-ejentum.ejentumTool",
+      "typeVersion": 1,
+      "position": [
+        384,
+        208
+      ],
+      "id": "754a7feb-175f-42e2-b4bd-3d701caffbbc",
+      "name": "perception",
+      "credentials": {
+        "ejentumApi": {
+          "id": "MSR1muz9SW4gvDkt",
+          "name": "Ejentum account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "model": "anthropic/claude-opus-4.7-fast",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenRouter",
+      "typeVersion": 1,
+      "position": [
+        -304,
+        192
+      ],
+      "id": "f847b68e-f929-49d6-bc4e-726addf78d23",
+      "name": "opus-4.7-fast",
+      "credentials": {
+        "openRouterApi": {
+          "id": "wcVESkQZTJHLuyRb",
+          "name": "OpenRouter account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "When chat message received": {
+      "main": [
+        [
+          {
+            "node": "reasonerAgent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Memory": {
+      "ai_memory": [
+        [
+          {
+            "node": "reasonerAgent",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "reasoning": {
+      "ai_tool": [
+        [
+          {
+            "node": "reasonerAgent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "code": {
+      "ai_tool": [
+        [
+          {
+            "node": "reasonerAgent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "anti-deception": {
+      "ai_tool": [
+        [
+          {
+            "node": "reasonerAgent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "perception": {
+      "ai_tool": [
+        [
+          {
+            "node": "reasonerAgent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "opus-4.7-fast": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "reasonerAgent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "versionId": "85e976bc-860a-46e9-8637-29ea28882d34",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "a43bcb39dd9adf002c13ed48302c45611915abf4a0d62419b16d7b9cf5b82a53"
+  },
+  "id": "tThybMgYmzsTWPvA",
+  "tags": []
+}

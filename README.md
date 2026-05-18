@@ -17,6 +17,9 @@ Evaluation framework for comparing baseline LLM output against Ejentum-augmented
 ### [blind-eval-trio](./blind-eval-trio)
 A 3-agent team for [heym](https://heym.run) v0.0.20+ that performs **pre-commitment self-evaluation for agent runtimes**. Submit (task, planned method); three blind cross-lab evaluators (steelman defends, stress_test attacks, gap_finder finds what's missing) return three independent perspectives. Calling agent integrates them — no synthesizer. Models cannot reliably self-evaluate; this is the structural fix. Validated across engineering refactors, payments migration, security incident response, investigative reasoning. [→ Setup and verification tests](./blind-eval-trio/README.md)
 
+### [n8n-community-node-quickstart](./n8n-community-node-quickstart)
+The smallest working setup for the Ejentum Reasoning Harness in n8n: one AI Agent with the four `n8n-nodes-ejentum` community-node operations (reasoning, code, anti-deception, memory) wired onto its Tools input. No HTTP nodes, no header-auth wiring. Install the community node, set two credentials, import, and the agent autonomously picks a harness per task. Start here, then move to the four-pattern template below. [→ Setup and how it works](./n8n-community-node-quickstart/README.md)
+
 ### [n8n-harness-integration-patterns](./n8n-harness-integration-patterns)
 Four ways to wire a reasoning harness into an n8n agent, each with a different control vs. flexibility tradeoff. One importable workflow, one chat trigger, four branches selected by prefix: dynamic system prompt (you pick the mode), reasoner agent (one tool, model decides when), full harness (four tools, model decides which), and ejentum-mcp (single MCP node, same as full harness with smaller footprint). Pick your tradeoff. [→ Setup and the four patterns in detail](./n8n-harness-integration-patterns/README.md)
 
