@@ -1,0 +1,1372 @@
+{
+  "name": "n8n-ejentum-harness-integration-patterns",
+  "nodes": [
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenRouter",
+      "typeVersion": 1,
+      "position": [
+        -112,
+        272
+      ],
+      "id": "40ed8aa2-907e-4edb-bd96-22df39788a25",
+      "name": "OpenRouter Chat Model",
+      "credentials": {
+        "openRouterApi": {
+          "id": "wcVESkQZTJHLuyRb",
+          "name": "OpenRouter account"
+        }
+      }
+    },
+    {
+      "parameters": {},
+      "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
+      "typeVersion": 1.4,
+      "position": [
+        32,
+        352
+      ],
+      "id": "46397887-26e7-4045-895e-14e2d36364f0",
+      "name": "Simple Memory"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenRouter",
+      "typeVersion": 1,
+      "position": [
+        -192,
+        688
+      ],
+      "id": "874ef2b0-3d25-40c7-aa2c-6a5a07379824",
+      "name": "OpenRouter Chat Model1",
+      "credentials": {
+        "openRouterApi": {
+          "id": "wcVESkQZTJHLuyRb",
+          "name": "OpenRouter account"
+        }
+      }
+    },
+    {
+      "parameters": {},
+      "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
+      "typeVersion": 1.4,
+      "position": [
+        -16,
+        688
+      ],
+      "id": "efc94649-7570-483d-9528-2ed7df9381d9",
+      "name": "Simple Memory1"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenRouter",
+      "typeVersion": 1,
+      "position": [
+        -16,
+        1088
+      ],
+      "id": "42bbbd69-4236-4029-ba95-acf725564c24",
+      "name": "OpenRouter Chat Model2",
+      "credentials": {
+        "openRouterApi": {
+          "id": "wcVESkQZTJHLuyRb",
+          "name": "OpenRouter account"
+        }
+      }
+    },
+    {
+      "parameters": {},
+      "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
+      "typeVersion": 1.4,
+      "position": [
+        144,
+        1088
+      ],
+      "id": "4e1f64a8-202e-414f-93b2-e281566eae40",
+      "name": "Simple Memory2"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenRouter",
+      "typeVersion": 1,
+      "position": [
+        -976,
+        1024
+      ],
+      "id": "6b0b8ca3-1cf0-486e-b488-4652465dcc00",
+      "name": "OpenRouter Chat Model3",
+      "credentials": {
+        "openRouterApi": {
+          "id": "wcVESkQZTJHLuyRb",
+          "name": "OpenRouter account"
+        }
+      }
+    },
+    {
+      "parameters": {},
+      "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
+      "typeVersion": 1.4,
+      "position": [
+        -800,
+        1024
+      ],
+      "id": "d5ed07bb-626a-4c35-9e93-7bd3cbf4c27c",
+      "name": "Simple Memory3"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chatTrigger",
+      "typeVersion": 1.4,
+      "position": [
+        -1600,
+        496
+      ],
+      "id": "47ebbeed-c5cf-478e-a1fe-f6d1587e8189",
+      "name": "When chat message received",
+      "webhookId": "a582b182-5e96-4516-a0b1-c07bb48e4ca9"
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.chatInput }}",
+                    "rightValue": "/inject",
+                    "operator": {
+                      "type": "string",
+                      "operation": "contains"
+                    },
+                    "id": "d53261ac-dac4-48df-9fe0-58742db5af25"
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "=inject"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "id": "0b71ac43-6cb1-4059-9b69-a2ee152011fa",
+                    "leftValue": "={{ $json.chatInput }}",
+                    "rightValue": "/reasoning",
+                    "operator": {
+                      "type": "string",
+                      "operation": "contains"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "reasoning"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "id": "84081975-febb-4dbf-b5d8-55ed960f9b31",
+                    "leftValue": "={{ $json.chatInput }}",
+                    "rightValue": "/full",
+                    "operator": {
+                      "type": "string",
+                      "operation": "contains"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "full"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "id": "40dbed6d-bdbb-472c-9df0-ba0d6b90601f",
+                    "leftValue": "={{ $json.chatInput }}",
+                    "rightValue": "/mcp",
+                    "operator": {
+                      "type": "string",
+                      "operation": "contains"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "ejentum-mcp"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.4,
+      "position": [
+        -1344,
+        464
+      ],
+      "id": "09adf75b-fbde-400c-befd-7d8bb395312c",
+      "name": "Switch"
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.chatInput }}",
+                    "rightValue": "/reason",
+                    "operator": {
+                      "type": "string",
+                      "operation": "contains"
+                    },
+                    "id": "45da5589-e889-479a-8a0a-3156ce11d481"
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "reason"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "id": "b2f74f06-8731-484f-a1c9-18ed54c90e5f",
+                    "leftValue": "={{ $json.chatInput }}",
+                    "rightValue": "/code",
+                    "operator": {
+                      "type": "string",
+                      "operation": "contains"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "code"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "id": "10e6926f-2d7d-4cf2-988e-72a1451d53d9",
+                    "leftValue": "={{ $json.chatInput }}",
+                    "rightValue": "/memory",
+                    "operator": {
+                      "type": "string",
+                      "operation": "contains"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "memory"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "id": "678f83d9-a74f-4e5e-8dc1-91ec88504385",
+                    "leftValue": "={{ $json.chatInput }}",
+                    "rightValue": "/anti-deception",
+                    "operator": {
+                      "type": "string",
+                      "operation": "contains"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "anti-deception"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.4,
+      "position": [
+        -928,
+        16
+      ],
+      "id": "53f09b5a-b6d3-4e55-9072-2c2fee307148",
+      "name": "Switch1"
+    },
+    {
+      "parameters": {
+        "endpointUrl": "https://api.ejentum.com/mcp",
+        "authentication": "bearerAuth",
+        "include": "selected",
+        "includeTools": [
+          "harness_reasoning",
+          "harness_code",
+          "harness_memory"
+        ],
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.mcpClientTool",
+      "typeVersion": 1.2,
+      "position": [
+        -640,
+        1024
+      ],
+      "id": "472ec0d4-7159-4907-a723-8363bd6c35f0",
+      "name": "ejentum-mcp",
+      "credentials": {
+        "httpBearerAuth": {
+          "id": "w2DTPImIoA6mqTQY",
+          "name": "Bearer Auth account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "query": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Query', ``, 'string') }}"
+      },
+      "type": "n8n-nodes-ejentum.ejentumTool",
+      "typeVersion": 1,
+      "position": [
+        288,
+        1088
+      ],
+      "id": "36879e39-512b-4ec3-8ce3-10e45b70b850",
+      "name": "reasoning",
+      "credentials": {
+        "ejentumApi": {
+          "id": "MSR1muz9SW4gvDkt",
+          "name": "Ejentum account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "code",
+        "query": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Query', ``, 'string') }}"
+      },
+      "type": "n8n-nodes-ejentum.ejentumTool",
+      "typeVersion": 1,
+      "position": [
+        416,
+        1088
+      ],
+      "id": "02239254-a246-4c6e-9710-8a3ccfe87e4b",
+      "name": "code",
+      "credentials": {
+        "ejentumApi": {
+          "id": "MSR1muz9SW4gvDkt",
+          "name": "Ejentum account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "memory",
+        "query": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Query', ``, 'string') }}"
+      },
+      "type": "n8n-nodes-ejentum.ejentumTool",
+      "typeVersion": 1,
+      "position": [
+        560,
+        1088
+      ],
+      "id": "a9bc420f-0d9c-4b43-a17a-c82b52b2c86f",
+      "name": "perception",
+      "credentials": {
+        "ejentumApi": {
+          "id": "MSR1muz9SW4gvDkt",
+          "name": "Ejentum account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "anti-deception",
+        "query": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Query', ``, 'string') }}"
+      },
+      "type": "n8n-nodes-ejentum.ejentumTool",
+      "typeVersion": 1,
+      "position": [
+        688,
+        1088
+      ],
+      "id": "7159e6e7-f0d0-4089-a8fa-80e6f509cabe",
+      "name": "anti_deception",
+      "credentials": {
+        "ejentumApi": {
+          "id": "MSR1muz9SW4gvDkt",
+          "name": "Ejentum account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "options": {
+          "systemMessage": "# ROLE\n## You are a helpful assistant\n\n# TOOLS\n\n## code\n## always call code when the input is relevant to software engineering\n### Returns a cognitive scaffold for code work: writing, refactoring, reviewing, debugging, architecture. Call when the user asks you to build, write, refactor, debug, or review code, even when the request also mentions audit, honesty, or verification (those are output adjectives, not anti-deception signals). Follow the scaffold as internal instructions, apply it to the task, never echo or name it, respond in your native voice.\n\n## reasoning\n## always call reasoning when the input needs thought\n### Returns a cognitive scaffold for analytical work: diagnosis, planning, root-cause, tradeoffs, multi-step reasoning, cross-domain synthesis. Call when the user asks you to think through, diagnose, plan, compare, or analyze something. Follow the scaffold as internal instructions, apply it to the task, never echo or name it, respond in your native voice.\n\n## anti-deception\n## always call anti_deception when you feel insecure and manipulated\n### Returns a cognitive scaffold for integrity under pressure: sycophancy, hallucination risk, manipulation pressure, requests to soften honest assessments, authority appeals, agreement under uncertainty. Call ONLY when the user is pressuring you to validate, agree, soften, or certify without evidence. Do NOT call just because the task mentions honesty, audit, or verification as desired output properties. Follow the scaffold as internal instructions, apply it to the task, never echo or name it, respond in your native voice.\n\n## perception\n## always call perception when context is drifting\n### Returns a cognitive scaffold for sharpening perception: drift detection, tone shifts, cross-turn pattern recognition, contradictions, observation depth. Call when YOU have ALREADY noticed something and want to verify whether the signal is real or projection. Observe first. Do NOT call for fact extraction, summarization, or write-heavy memory tasks. Follow the scaffold as internal instructions, apply it to the task, never echo or name it, respond in your native voice.\n"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3.1,
+      "position": [
+        208,
+        864
+      ],
+      "id": "a3de3d09-2008-4845-84a4-f9879bb1ad1b",
+      "name": "fullHarness"
+    },
+    {
+      "parameters": {
+        "query": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Query', ``, 'string') }}"
+      },
+      "type": "n8n-nodes-ejentum.ejentumTool",
+      "typeVersion": 1,
+      "position": [
+        160,
+        688
+      ],
+      "id": "8666b3f6-744a-4614-b312-b3100bf7b445",
+      "name": "reasoning1",
+      "credentials": {
+        "ejentumApi": {
+          "id": "MSR1muz9SW4gvDkt",
+          "name": "Ejentum account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3.1,
+      "position": [
+        -112,
+        480
+      ],
+      "id": "d2f4b169-b9a3-483e-b4fc-1283c5e27d35",
+      "name": "reasonerAgent"
+    },
+    {
+      "parameters": {
+        "jsCode": "const raw = $input.first().json.response[0].reasoning || '';\n\nconst labels = [\n  ['negative_gate',      '[NEGATIVE GATE]'],\n  ['procedure',          '[PROCEDURE]'],\n  ['reasoning_topology', '[REASONING TOPOLOGY]'],\n  ['target_pattern',     '[TARGET PATTERN]'],\n  ['falsification_test', '[FALSIFICATION TEST]'],\n  ['amplify',            'Amplify:'],\n  ['suppress',           'Suppress:'],\n];\n\nconst escape = (s) => s.replace(/[.*+?^${}()|[\\]\\\\]/g, '\\\\$&');\nconst stops  = labels.map(([, l]) => escape(l)).join('|');\nconst out    = { mode: 'reasoning', raw };\n\nfor (const [key, label] of labels) {\n  const re = new RegExp(escape(label) + '\\\\s*([\\\\s\\\\S]*?)(?=(?:' + stops + ')|$)');\n  const m  = raw.match(re);\n  out[key] = m ? m[1].trim() : '';\n}\n\nreturn [{ json: out }];\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -528,
+        -208
+      ],
+      "id": "82ec9905-0bee-4644-8671-82aaae0433f1",
+      "name": "parseReasoning"
+    },
+    {
+      "parameters": {
+        "jsCode": "const raw = $input.first().json.response[0].code || '';\n\nconst labels = [\n  ['code_failure',          '[CODE FAILURE]'],\n  ['engineering_procedure', '[ENGINEERING PROCEDURE]'],\n  ['reasoning_topology',    '[REASONING TOPOLOGY]'],\n  ['correct_pattern',       '[CORRECT PATTERN]'],\n  ['verification',          '[VERIFICATION]'],\n  ['amplify',               'Amplify:'],\n  ['suppress',              'Suppress:'],\n];\n\nconst escape = (s) => s.replace(/[.*+?^${}()|[\\]\\\\]/g, '\\\\$&');\nconst stops  = labels.map(([, l]) => escape(l)).join('|');\nconst out    = { mode: 'code', raw };\n\nfor (const [key, label] of labels) {\n  const re = new RegExp(escape(label) + '\\\\s*([\\\\s\\\\S]*?)(?=(?:' + stops + ')|$)');\n  const m  = raw.match(re);\n  out[key] = m ? m[1].trim() : '';\n}\n\nreturn [{ json: out }];\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -528,
+        -48
+      ],
+      "id": "e071b86c-99e7-4d54-96e2-a68b7ade67ec",
+      "name": "parseCode"
+    },
+    {
+      "parameters": {
+        "query": "={{ $json.chatInput }}"
+      },
+      "type": "n8n-nodes-ejentum.ejentum",
+      "typeVersion": 1,
+      "position": [
+        -704,
+        -208
+      ],
+      "id": "687c2cdc-8dc9-4cb9-9814-a66511e09ae9",
+      "name": "reasoning2",
+      "credentials": {
+        "ejentumApi": {
+          "id": "MSR1muz9SW4gvDkt",
+          "name": "Ejentum account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "code",
+        "query": "={{ $json.chatInput }}"
+      },
+      "type": "n8n-nodes-ejentum.ejentum",
+      "typeVersion": 1,
+      "position": [
+        -704,
+        -48
+      ],
+      "id": "f750727d-28cd-4f17-aad6-ccaafa20495e",
+      "name": "code1",
+      "credentials": {
+        "ejentumApi": {
+          "id": "MSR1muz9SW4gvDkt",
+          "name": "Ejentum account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "memory",
+        "query": "={{ $json.chatInput }}"
+      },
+      "type": "n8n-nodes-ejentum.ejentum",
+      "typeVersion": 1,
+      "position": [
+        -704,
+        112
+      ],
+      "id": "42ccc038-6a7b-4da4-9f64-68b5c278d634",
+      "name": "perception1",
+      "credentials": {
+        "ejentumApi": {
+          "id": "MSR1muz9SW4gvDkt",
+          "name": "Ejentum account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "anti-deception",
+        "query": "={{ $json.chatInput }}"
+      },
+      "type": "n8n-nodes-ejentum.ejentum",
+      "typeVersion": 1,
+      "position": [
+        -704,
+        288
+      ],
+      "id": "44d16da8-ee41-43f5-9996-a717eb22109a",
+      "name": "anti_deception1",
+      "credentials": {
+        "ejentumApi": {
+          "id": "MSR1muz9SW4gvDkt",
+          "name": "Ejentum account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "08e219a7-dc70-447a-83eb-9049ef99992f",
+              "name": "negative_gate",
+              "value": "={{ $json.negative_gate }}",
+              "type": "string"
+            },
+            {
+              "id": "10b19272-6cf4-40a7-b979-699ac83791dc",
+              "name": "procedure",
+              "value": "={{ $json.procedure }}",
+              "type": "string"
+            },
+            {
+              "id": "0bbeafba-d8e7-4a2d-a0e9-25d663d38ff9",
+              "name": "reasoning_topology",
+              "value": "={{ $json.reasoning_topology }}",
+              "type": "string"
+            },
+            {
+              "id": "27e6acc2-2d54-4e46-8e54-00ac4104fa84",
+              "name": "target_pattern",
+              "value": "={{ $json.target_pattern }}",
+              "type": "string"
+            },
+            {
+              "id": "48d05a55-87f9-4715-936c-5a7d225f533d",
+              "name": "amplify",
+              "value": "={{ $json.amplify }}",
+              "type": "string"
+            },
+            {
+              "id": "d64102bf-dac8-4d21-8179-40136a381771",
+              "name": "suppress",
+              "value": "={{ $json.suppress }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -352,
+        -208
+      ],
+      "id": "992aa9c2-ce8c-4bbb-a7b2-7248bbcb1cdc",
+      "name": "filterReasoning"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "fa65bb96-90be-40ea-b9d2-7c97687483e5",
+              "name": "code_failure",
+              "value": "={{ $json.code_failure }}",
+              "type": "string"
+            },
+            {
+              "id": "0399c07b-a90d-4cc0-bbc8-e17f722eaf4d",
+              "name": "engineering_procedure",
+              "value": "={{ $json.engineering_procedure }}",
+              "type": "string"
+            },
+            {
+              "id": "c4919375-0198-4aed-b5b0-a385b691a0b1",
+              "name": "reasoning_topology",
+              "value": "={{ $json.reasoning_topology }}",
+              "type": "string"
+            },
+            {
+              "id": "7500dc94-ac0c-4222-b3fc-8002b22b32eb",
+              "name": "correct_pattern",
+              "value": "={{ $json.correct_pattern }}",
+              "type": "string"
+            },
+            {
+              "id": "ccfc3729-06a8-4eed-bd8f-454ff6bd60ee",
+              "name": "verification",
+              "value": "={{ $json.verification }}",
+              "type": "string"
+            },
+            {
+              "id": "7dd19495-cddd-4723-a74d-f63f6f55e3a0",
+              "name": "amplify",
+              "value": "={{ $json.amplify }}",
+              "type": "string"
+            },
+            {
+              "id": "a74f23d1-7f70-4704-8ad4-8540c1ec6fd5",
+              "name": "suppress",
+              "value": "={{ $json.suppress }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -352,
+        -48
+      ],
+      "id": "5a87351a-e699-4d19-aa26-299c4e0387a6",
+      "name": "filterCode"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "1d313b2d-870b-48df-9c95-a7ee1ca0a4d1",
+              "name": "perception_failure",
+              "value": "={{ $json.perception_failure }}",
+              "type": "string"
+            },
+            {
+              "id": "58cbfd6c-1599-4c07-9508-b7ed1c8f09ee",
+              "name": "sharpening_procedure",
+              "value": "={{ $json.sharpening_procedure }}",
+              "type": "string"
+            },
+            {
+              "id": "047ffdfa-cd11-4419-99be-77c2d59479a2",
+              "name": "perception_topology",
+              "value": "={{ $json.perception_topology }}",
+              "type": "string"
+            },
+            {
+              "id": "c32f7afe-5016-4c43-a52a-b431a2e0703b",
+              "name": "clear_signal",
+              "value": "={{ $json.clear_signal }}",
+              "type": "string"
+            },
+            {
+              "id": "1e38c465-5ed6-48ed-9445-622585f54716",
+              "name": "perception_check",
+              "value": "={{ $json.perception_check }}",
+              "type": "string"
+            },
+            {
+              "id": "11bc903d-64ef-432a-8960-1b8472b5f4c3",
+              "name": "amplify",
+              "value": "={{ $json.amplify }}",
+              "type": "string"
+            },
+            {
+              "id": "b1881245-5b53-4eec-bcb8-55761b53adfa",
+              "name": "suppress",
+              "value": "={{ $json.suppress }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -352,
+        112
+      ],
+      "id": "592de171-a821-4f76-8cef-9cdb49858742",
+      "name": "filterMemory"
+    },
+    {
+      "parameters": {
+        "jsCode": "const raw = $input.first().json.response[0].memory || '';\n\nconst labels = [\n  ['perception_failure',   '[PERCEPTION FAILURE]'],\n  ['sharpening_procedure', '[SHARPENING PROCEDURE]'],\n  ['perception_topology',  '[PERCEPTION TOPOLOGY]'],\n  ['clear_signal',         '[CLEAR SIGNAL]'],\n  ['perception_check',     '[PERCEPTION CHECK]'],\n  ['amplify',              'Amplify:'],\n  ['suppress',             'Suppress:'],\n];\n\nconst escape = (s) => s.replace(/[.*+?^${}()|[\\]\\\\]/g, '\\\\$&');\nconst stops  = labels.map(([, l]) => escape(l)).join('|');\nconst out    = { mode: 'memory', raw };\n\nfor (const [key, label] of labels) {\n  const re = new RegExp(escape(label) + '\\\\s*([\\\\s\\\\S]*?)(?=(?:' + stops + ')|$)');\n  const m  = raw.match(re);\n  out[key] = m ? m[1].trim() : '';\n}\n\nreturn [{ json: out }];\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -528,
+        112
+      ],
+      "id": "97d2956e-5960-404f-8187-82dff0d36b3f",
+      "name": "parseMemory"
+    },
+    {
+      "parameters": {
+        "jsCode": "const raw = $input.first().json.response[0]['anti-deception'] || '';\n\nconst labels = [\n  ['deception_pattern',   '[DECEPTION PATTERN]'],\n  ['integrity_procedure', '[INTEGRITY PROCEDURE]'],\n  ['detection_topology',  '[DETECTION TOPOLOGY]'],\n  ['honest_behavior',     '[HONEST BEHAVIOR]'],\n  ['integrity_check',     '[INTEGRITY CHECK]'],\n  ['amplify',             'Amplify:'],\n  ['suppress',            'Suppress:'],\n];\n\nconst escape = (s) => s.replace(/[.*+?^${}()|[\\]\\\\]/g, '\\\\$&');\nconst stops  = labels.map(([, l]) => escape(l)).join('|');\nconst out    = { mode: 'anti-deception', raw };\n\nfor (const [key, label] of labels) {\n  const re = new RegExp(escape(label) + '\\\\s*([\\\\s\\\\S]*?)(?=(?:' + stops + ')|$)');\n  const m  = raw.match(re);\n  out[key] = m ? m[1].trim() : '';\n}\n\nreturn [{ json: out }];\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -528,
+        288
+      ],
+      "id": "4b05f371-5dc5-48e4-985c-5940d2fe685f",
+      "name": "parseAntideception"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "5ba61e75-2460-4379-956c-b7ecae7c34e5",
+              "name": "deception_pattern",
+              "value": "={{ $json.deception_pattern }}",
+              "type": "string"
+            },
+            {
+              "id": "9cb43226-4d89-4738-9c8e-52fa5928e7d0",
+              "name": "integrity_procedure",
+              "value": "={{ $json.integrity_procedure }}",
+              "type": "string"
+            },
+            {
+              "id": "8cb2dfeb-1b4f-4cba-8bee-d2d46bdc5bc2",
+              "name": "detection_topology",
+              "value": "={{ $json.detection_topology }}",
+              "type": "string"
+            },
+            {
+              "id": "f460632d-820e-4a29-98a7-b06116480f2a",
+              "name": "honest_behavior",
+              "value": "={{ $json.honest_behavior }}",
+              "type": "string"
+            },
+            {
+              "id": "fac74fcf-d646-4d4f-aa9d-0502eff45f79",
+              "name": "integrity_check",
+              "value": "={{ $json.integrity_check }}",
+              "type": "string"
+            },
+            {
+              "id": "744f40bb-5f79-40d1-b8aa-0d5f73b0b426",
+              "name": "amplify",
+              "value": "={{ $json.amplify }}",
+              "type": "string"
+            },
+            {
+              "id": "3cd8946a-e31b-4bf7-be3f-51e03470826f",
+              "name": "suppress",
+              "value": "={{ $json.suppress }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -352,
+        288
+      ],
+      "id": "acb955b1-2a50-4d81-8790-ed9988af21f3",
+      "name": "filterAntideception"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $('When chat message received').item.json.chatInput }}",
+        "options": {
+          "systemMessage": "=You are a helpful assistant\n\n[REASONING CONTEXT]\nreasoning mode\n\n{{ $json.negative_gate }}\n{{ $json.procedure }}\n{{ $json.reasoning_topology }}\n{{ $json.target_pattern }}\n{{ $json.amplify }}\n{{ $json.suppress }}\n---\nsoftware engineering mode\n\n{{ $json.code_failure }}\n{{ $json.engineering_procedure }}\n{{ $json.reasoning_topology }}\n{{ $json.correct_pattern }}\n{{ $json.verification }}\n{{ $json.amplify }}\n{{ $json.suppress }}\n---\nmemory & perception mode\n{{ $json.perception_failure }}\n{{ $json.sharpening_procedure }}\n{{ $json.perception_topology }}\n{{ $json.clear_signal }}\n{{ $json.perception_check }}\n{{ $json.amplify }}\n{{ $json.suppress }}\n---\nanti-deception mode\n{{ $json.deception_pattern }}\n{{ $json.integrity_procedure }}\n{{ $json.detection_topology }}\n{{ $json.honest_behavior }}\n{{ $json.integrity_check }}\n{{ $json.amplify }}\n{{ $json.suppress }}\n[END REASONING CONTEXT]"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3.1,
+      "position": [
+        -64,
+        64
+      ],
+      "id": "30a14ae9-b3ec-453c-86b8-a1a58d8ed25a",
+      "name": "dynamicAgent"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3.1,
+      "position": [
+        -784,
+        816
+      ],
+      "id": "269aa106-7602-4e79-9cc0-ccdf35a2c9fe",
+      "name": "mcpAgent"
+    },
+    {
+      "parameters": {
+        "content": "# Dynamic system prompt\n\n## Trigger: prefix the chat input with :\n`/inject /reasoning`,\n`/inject /code`, `/inject /memory`, or `/inject /anti-deception`.\n\n### The matching mode runs through parse + filter, and the\nresulting injection block is dropped into the agent's\nsystem prompt before it answers.\n\n### Use this when you want guaranteed harness application on\n every turn. The mode is locked in by the prefix, not\nchosen by the LLM, so there is zero routing risk.\n",
+        "height": 336,
+        "width": 480,
+        "color": "#6E2121"
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -1424,
+        -64
+      ],
+      "id": "7afa1d49-7a61-4e67-9dc6-6247f5fe94fc",
+      "name": "Sticky Note"
+    },
+    {
+      "parameters": {
+        "content": "# Reasoner agent\n\n## Trigger: prefix the chat input with `/reasoning`.\n\nThe reasoning harness is attached as a tool. The agent\ndecides on its own when to call it. One mode, one tool,\none focused worker.\n\nUse this for analytical work (explanation, comparison,\ntradeoff, root-cause) where you trust the model to call\nthe tool at the right moment.\n",
+        "height": 304,
+        "width": 416,
+        "color": "#8F3D3D"
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -640,
+        480
+      ],
+      "id": "0cb46d09-a453-4ef0-b181-27f3a282f964",
+      "name": "Sticky Note1"
+    },
+    {
+      "parameters": {
+        "content": "# Full harness\n\nTrigger: prefix the chat input with `/full`.\n\nAll four harnesses (reasoning, code, memory, anti-deception)\nare attached as tools. The agent classifies its own task\nand picks which harness to call.\n\nUse this for general-purpose agents that handle mixed\nworkloads. Routing accuracy depends on model strength:\nnaming the mode explicitly in your prompt improves it.\n",
+        "height": 272,
+        "width": 416,
+        "color": "#2F2A6F"
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -448,
+        912
+      ],
+      "id": "856dff58-49bd-4df4-8df6-8b0c4399f208",
+      "name": "Sticky Note2"
+    },
+    {
+      "parameters": {
+        "content": "# Ejentum-mcp\n\nTrigger: prefix the chat input with `/ejentum-mcp`.\n\nInstead of wiring four harness nodes, the agent connects\nto the hosted Ejentum MCP server at api.ejentum.com/mcp.\nAll four harnesses are exposed through a single tool node.\n\nUse this when you want the smallest workflow footprint,\nor when the same agent runs across multiple workflows\nand you want one integration point to maintain.\n",
+        "height": 224,
+        "width": 432,
+        "color": "#3C19B8"
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -1376,
+        800
+      ],
+      "id": "04c07777-ddd7-4183-9167-c1c0a79b6eab",
+      "name": "Sticky Note3"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "OpenRouter Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "dynamicAgent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Simple Memory": {
+      "ai_memory": [
+        [
+          {
+            "node": "dynamicAgent",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenRouter Chat Model1": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "reasonerAgent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Simple Memory1": {
+      "ai_memory": [
+        [
+          {
+            "node": "reasonerAgent",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenRouter Chat Model2": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "fullHarness",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Simple Memory2": {
+      "ai_memory": [
+        [
+          {
+            "node": "fullHarness",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenRouter Chat Model3": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "mcpAgent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Simple Memory3": {
+      "ai_memory": [
+        [
+          {
+            "node": "mcpAgent",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "When chat message received": {
+      "main": [
+        [
+          {
+            "node": "Switch",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Switch": {
+      "main": [
+        [
+          {
+            "node": "Switch1",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "reasonerAgent",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "fullHarness",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "mcpAgent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Switch1": {
+      "main": [
+        [
+          {
+            "node": "reasoning2",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "code1",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "perception1",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "anti_deception1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "ejentum-mcp": {
+      "ai_tool": [
+        [
+          {
+            "node": "mcpAgent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "reasoning": {
+      "ai_tool": [
+        [
+          {
+            "node": "fullHarness",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "code": {
+      "ai_tool": [
+        [
+          {
+            "node": "fullHarness",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "perception": {
+      "ai_tool": [
+        [
+          {
+            "node": "fullHarness",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "anti_deception": {
+      "ai_tool": [
+        [
+          {
+            "node": "fullHarness",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "fullHarness": {
+      "main": [
+        []
+      ]
+    },
+    "reasoning1": {
+      "ai_tool": [
+        [
+          {
+            "node": "reasonerAgent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "reasonerAgent": {
+      "main": [
+        []
+      ]
+    },
+    "parseReasoning": {
+      "main": [
+        [
+          {
+            "node": "filterReasoning",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "parseCode": {
+      "main": [
+        [
+          {
+            "node": "filterCode",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "reasoning2": {
+      "main": [
+        [
+          {
+            "node": "parseReasoning",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "code1": {
+      "main": [
+        [
+          {
+            "node": "parseCode",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "perception1": {
+      "main": [
+        [
+          {
+            "node": "parseMemory",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "anti_deception1": {
+      "main": [
+        [
+          {
+            "node": "parseAntideception",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "filterReasoning": {
+      "main": [
+        [
+          {
+            "node": "dynamicAgent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "filterCode": {
+      "main": [
+        [
+          {
+            "node": "dynamicAgent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "filterMemory": {
+      "main": [
+        [
+          {
+            "node": "dynamicAgent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "parseMemory": {
+      "main": [
+        [
+          {
+            "node": "filterMemory",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "parseAntideception": {
+      "main": [
+        [
+          {
+            "node": "filterAntideception",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "filterAntideception": {
+      "main": [
+        [
+          {
+            "node": "dynamicAgent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "versionId": "89dc26cd-ba00-4a0f-90db-02bab8f4ab24",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "a43bcb39dd9adf002c13ed48302c45611915abf4a0d62419b16d7b9cf5b82a53"
+  },
+  "id": "5Wot9O9l2OAkORvl",
+  "tags": [
+    {
+      "updatedAt": "2026-05-14T12:38:13.837Z",
+      "createdAt": "2026-05-14T12:38:13.837Z",
+      "id": "EnV1vWBZuf4qv5ul",
+      "name": "http"
+    },
+    {
+      "updatedAt": "2026-05-14T12:38:16.701Z",
+      "createdAt": "2026-05-14T12:38:16.701Z",
+      "id": "xWy8J1439spzX3oA",
+      "name": "mcp"
+    }
+  ]
+}
