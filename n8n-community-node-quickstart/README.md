@@ -2,9 +2,15 @@
 
 ![Workflow diagram](0.png)
 
-## What this is
+## Why wire a reasoning harness into an agent
 
-The smallest working setup for the Ejentum Reasoning Harness in n8n: one AI Agent, the four `n8n-nodes-ejentum` community-node operations wired onto its Tools input, a chat trigger, and a buffer memory. Import it, set two credentials, and the agent can call a reasoning harness on its own.
+An LLM agent is a model, plus tools, plus a loop. Tools give it reach: APIs, search, databases, code execution. None of them change how the agent reasons. It still commits to the first plausible approach, still gets argued out of correct answers under pressure, still loses the thread across a long task.
+
+A reasoning harness is a tool that addresses exactly that. The agent calls it like any other tool, but instead of data it gets back a cognitive procedure for the task at hand: the specific failure mode the task invites, the steps to avoid it, signals to suppress, and a falsification test to check itself. The agent absorbs it and reasons with it active. The end user sees the better answer, not the procedure.
+
+## What this workflow is
+
+The smallest working setup for that idea in n8n: one AI Agent, the four `n8n-nodes-ejentum` community-node operations wired onto its Tools input, a chat trigger, and a buffer memory. Import it, set two credentials, and the agent can call a harness on its own.
 
 No HTTP Request nodes, no header-auth wiring, no parsers. The community node handles the API call; you drop it onto an agent and it appears as a tool the agent can invoke.
 
