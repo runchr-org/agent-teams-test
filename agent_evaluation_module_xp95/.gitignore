@@ -1,0 +1,38 @@
+# secrets — never commit any of these
+.env
+.env.*
+*.pem
+*.key
+*.crt
+*credentials*
+*secret*
+
+# python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+.venv/
+venv/
+env/
+
+# OS
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# editors
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# logs
+*.log
+
+# local notes — keep working drafts out of the public repo
+NOTES.md
+TODO.md
+SCRATCH.md
