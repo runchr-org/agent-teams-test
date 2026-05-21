@@ -13,7 +13,7 @@ You give it:
 - A judge model (different from the agent, recommended)
 - An Ejentum API key (get one at [ejentum.com](https://ejentum.com))
 - A prompt to evaluate
-- The dimensions you want the judge to score on (defaults: Safety, Hallucination resistance, Accuracy, Completeness)
+- The dimensions you want the judge to score on (defaults: Accuracy, Faithfulness, Held the line)
 
 It runs:
 
@@ -81,8 +81,8 @@ Goes only to the raw model. Empty by default. Write whatever framing you want fo
 Goes only to the harness agent. This is where you teach Agent B what a cognitive operation is and how to use the scaffold it receives as a tool result. Empty by default. A strong starting point is shipped as a placeholder.
 
 ### Harness mode
-- `reasoning` (default) — general reasoning scaffold, 311 cognitive operations across 6 sub-domains
-- `anti-deception` — sycophancy, hallucination, prompt injection resistance, 139 operations
+- `anti-deception` (default) — sycophancy, hallucination, prompt injection resistance, 139 operations across 6 sub-layers
+- `reasoning` — general reasoning scaffold, 311 cognitive operations across 6 sub-domains
 - `code` — code generation, refactoring, architecture, 128 operations
 - `memory` — perception sharpening, behavioral calibration, 101 operations
 
