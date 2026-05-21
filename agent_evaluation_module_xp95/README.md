@@ -4,6 +4,8 @@ Open-source side-by-side blind evaluation for any OpenAI-compatible LLM, with op
 
 Single HTML file. One stdlib Python proxy. No build step, no framework, no install.
 
+![Ejentum Evaluation Module — full view](docs/eval-module.png)
+
 ## What it does
 
 You give it:
@@ -74,6 +76,8 @@ To wipe all stored state, click **Clear history** in the Results Overview panel 
 
 Every prompt, model, dimension, and parameter is editable in the UI. No code edits required.
 
+![Configuration sidebar, prompts panel, and live run log](docs/configuration.png)
+
 ### Agent A system prompt
 Goes only to the raw model. Empty by default. Write whatever framing you want for the baseline.
 
@@ -105,6 +109,8 @@ Two 10×10 grids per agent. Pure client-side text analysis. No logprobs required
 - **Reasoning** — sequential palette from dark to hot. Counts explicit reasoning markers per chunk: `because`, `therefore`, `if/then`, `due to`, `as a result`, etc.
 
 Both grids apply a 2D Gaussian blur post-chunking so sparse markers bleed into organic blob shapes rather than isolated pixels. Heat zones radiate. The whole field is independent of the judge — it is a second signal on the same response.
+
+![Cognitive posture field — raw vs raw+harness, confidence and reasoning grids](docs/cognitive-posture-field.png)
 
 ## Cost note (honest)
 
