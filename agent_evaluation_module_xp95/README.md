@@ -4,6 +4,8 @@ Open-source side-by-side blind evaluation for any OpenAI-compatible LLM, with op
 
 Single HTML file. One stdlib Python proxy. No build step, no framework, no install.
 
+https://github.com/ejentum/agent-teams/raw/main/agent_evaluation_module_xp95/docs/evaluation_module_video.mp4
+
 ![Ejentum Evaluation Module — full view](docs/eval-module.png)
 
 ## What it does
