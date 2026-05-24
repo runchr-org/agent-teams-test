@@ -6,7 +6,7 @@ Single HTML file. One stdlib Python proxy. No build step, no framework, no insta
 
 Second in the Ejentum eval-module series. v1 was [`agent_evaluation_module_xp95`](../agent_evaluation_module_xp95/) — a flat blind-judge baseline with two heatmap grids. This is `xp95-v2` — same Win95 chrome, same blind-judge philosophy, substantially deeper visualizers and per-visualizer explanations behind a `?` button on every panel.
 
-![Ejentum · Live Harness Demo — full view](docs/live-harness-demo-hero.png)
+![Ejentum · Live Harness Demo — main view with token-rainbow diff, results overview, cubes and spectrometer](docs/hero.png)
 
 ## What is new in this v2 module
 
@@ -81,6 +81,8 @@ End-to-end is 5–40 seconds depending on model latency.
 ## Reading the results
 
 Every visualizer has a `?` button next to its title. Click it for the full compact-comprehensive reading guide written inline. Below is a tour of what each panel surfaces.
+
+![Reasoning topology DAG, spectrometer waveforms, diff strip, and harness call panel after a completed run](docs/visualizers.png)
 
 ### Agent A and Agent B output panels
 
