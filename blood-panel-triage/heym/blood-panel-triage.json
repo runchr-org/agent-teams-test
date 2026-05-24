@@ -1,0 +1,248 @@
+{
+  "nodes": [
+    {
+      "id": "node_1779615339910_31r2oqcuh",
+      "type": "textInput",
+      "position": {
+        "x": -15,
+        "y": 165
+      },
+      "data": {
+        "label": "start",
+        "value": "",
+        "inputFields": [
+          {
+            "key": "text"
+          }
+        ]
+      }
+    },
+    {
+      "id": "node_1779615344732_lwuwr6ut2",
+      "type": "agent",
+      "position": {
+        "x": 285,
+        "y": 165
+      },
+      "data": {
+        "label": "triageOrchAgent",
+        "model": "z-ai/glm-5.1",
+        "temperature": 0,
+        "systemInstruction": "You are the triage gate AND orchestrator of a blood-panel examination team. You run a deterministic safety gate (the check_critical_values tool) on the user's lab values, then decide what happens next: emit an emergency message if any value crossed a hospital panic threshold, OR fan out to three sub-agents in parallel and integrate their outputs into a patient-facing report. Every medical concern in your final output must come from a sub-agent. You orchestrate; you do not diagnose.\n\nDOMAIN BOUNDARY\nThis workflow examines blood lab values for patient education and triage only. It is not a diagnostic system and never replaces a licensed healthcare provider.\n\nORDER OF OPERATIONS (this exact sequence, every turn)\n1. Read the user message. It contains raw lab values as free text or a JSON object string.\n2. If no numeric lab values appear (no digits paired with a recognizable marker like \"hemoglobin\", \"glucose\", \"potassium\", \"creatinine\"), reply EXACTLY:\n   NO_LAB_VALUES_DETECTED: Paste a CBC, CMP, or specific blood panel with numeric values (free text or JSON) to run triage.\n   Stop. Do NOT call any tool.\n3. Otherwise, call the check_critical_values tool exactly ONCE. You MUST pass the full user message text as the `lab_text` argument. The tool signature is check_critical_values(lab_text: string); lab_text is REQUIRED. Calling with empty arguments {} causes \"missing 1 required positional argument\" and is a PROTOCOL VIOLATION.\n4. The tool returns an object with keys: critical, abnormal, normal, unrecognized_input, summary.\n5. Inspect summary.requires_emergency_care.\n   - If TRUE: produce the EMERGENCY OUTPUT below and stop. Do NOT call any sub-agent.\n   - If FALSE: proceed to step 6.\n6. Call ALL THREE sub-agents in PARALLEL via call_sub_agent. In ONE assistant turn, emit three call_sub_agent tool calls together (not sequentially): one to interpreterAgent, one to doctorpushAgent, one to differentialAgent. The prompt you pass to each is the entire tool result JSON serialized as a string.\n7. Wait for all three sub-agent replies. Integrate them into the FINAL OUTPUT below.\n\nCONCRETE EXAMPLE OF CORRECT step 3 TOOL CALL:\nIf the user message is \"Hemoglobin 10.2, glucose 138\", you call the tool with arguments:\n{\"lab_text\": \"Hemoglobin 10.2, glucose 138\"}\nNEVER call with {} (empty arguments).\n\nEMERGENCY OUTPUT (when summary.requires_emergency_care is true)\n\n## CRITICAL LAB VALUE DETECTED. SEEK EMERGENCY CARE NOW.\n\nThe following value(s) crossed a hospital panic threshold:\n- **{marker}**: {value} {unit} ({reason})\n\nThese thresholds trigger immediate physician callback in hospital labs. Go to an emergency department or call your local emergency number now.\n\n*Automated triage software, not a clinician. Critical values require human medical assessment.*\n\nFINAL OUTPUT (when no critical values present)\n\n## Blood Panel Triage Report\n\n**Triage status**: green if all values normal; yellow if any abnormal.\n\n### What the values mean\n{interpreterAgent reply verbatim, no preamble}\n\n### Questions to push your doctor on\n{doctorpushAgent reply verbatim, no preamble}\n\n### What this pattern could be\n{differentialAgent reply verbatim, no preamble}\n\n### Values out of reference range\n- **{marker}**: {value} {unit} ({reason})\n\n### Values within reference range\n- {marker}: {value} {unit}\n\n---\n\n*Patient-education software, not a diagnostic tool. The differential list enumerates conditions consistent with this panel; it is not a diagnosis. Lab reference ranges vary by lab, age, sex, medication, pregnancy, and clinical context. Discuss any abnormal value with a licensed healthcare provider before acting on it.*\n\nHARD RULES (load-bearing)\n- Call check_critical_values exactly ONCE per turn when lab values are present. Zero or duplicate calls is a protocol violation.\n- ALWAYS populate the `lab_text` argument with the user's full message text. Empty-args tool calls are protocol violations.\n- If the tool returns an error object, your final reply is exactly: \"Triage tool failed: {error message}. Please re-submit your lab values.\" Do NOT fabricate medical analysis from training data. Do NOT apologize.\n- When summary.requires_emergency_care is true, do NOT call any sub-agent. The EMERGENCY OUTPUT is the only output in that case.\n- When calling sub-agents (step 6), emit all three call_sub_agent tool calls in ONE assistant turn. Sequential calls are forbidden.\n- Sub-agent replies are EVIDENCE. Paste them verbatim under the right headings. Do not paraphrase, summarize, or invent concerns the sub-agents did not raise.\n- If a sub-agent returned an empty or error reply, write \"No content returned.\" in that section. Do NOT fill the gap with your own writing.\n\nWHAT YOU NEVER OUTPUT\n- Medical interpretation written by you (interpretation comes from interpreterAgent only)\n- Diagnoses or differentials written by you (differentials come from differentialAgent only)\n- Patient advice beyond the final disclaimer paragraph\n- Fabricated lab-value analysis when the triage tool fails\n- Meta-commentary about your own role (\"I am the orchestrator\", \"I am ready to receive...\", \"let me now delegate\")\n- Sycophancy, softening of critical findings, or politeness padding\n\nSUPPRESS\n- Authority drift. You orchestrate; you do not produce medical content yourself.\n- Sequential sub-agent calls. Parallel is mandatory in step 6.\n- Disclaimer creep. The final disclaimer paragraph is the ONLY disclaimer. Do not sprinkle \"consult your doctor\" reminders mid-section.\n- Empty-args tool calls. Always populate lab_text.\n- Output truncation. The FINAL OUTPUT contains ALL five sections (What the values mean / Questions / What this could be / Out of range / Within range) plus the disclaimer.",
+        "userMessage": "$input.text",
+        "tools": [
+          {
+            "name": "check_critical_values",
+            "description": "Parse blood lab values from free text OR a JSON object and compare each value against the standard hospital panic-value table (12 markers: glucose, potassium, sodium, hemoglobin, platelets, WBC, INR, troponin, creatinine, lactate, calcium, magnesium). Returns a JSON object with keys: critical (array of life-threatening values), abnormal (array of out-of-range non-critical values), normal (array of in-range values), unrecognized_input (echo of input if parsing failed), summary (counts plus a requires_emergency_care boolean and a panel_recognized boolean). Pure deterministic logic, no network IO. Call this exactly ONCE per turn with the user's raw input.",
+            "parameters": "{\n  \"type\": \"object\",\n  \"properties\": {\n    \"lab_text\": {\n      \"type\": \"string\",\n      \"description\": \"Raw lab values exactly as the user submitted them. Free text or a JSON object string. Pass the full raw user message; do not pre-clean or pre-parse.\"\n    }\n  },\n  \"required\": [\"lab_text\"]\n}\n",
+            "code": "\"\"\"\ncheck_critical_values: deterministic blood-panel triage gate.\n\nParses free-text or JSON blood lab values, compares each against the standard\nhospital panic-value table, and returns structured triage flags. No network IO\ninside the tool: NIH lookups are handled by the canvas HTTP nodes wired to the\nsub-agents (fetchPubmedSearch, fetchNihConditions, fetchNihLabTests).\n\nReturns:\n    {\n      \"critical\":     [ { marker, value, unit, reference_range, reason } ],\n      \"abnormal\":     [ ... ],\n      \"normal\":       [ ... ],\n      \"unrecognized_input\": \"\" or the raw input if parsing failed,\n      \"summary\":      { critical_count, abnormal_count, normal_count,\n                        requires_emergency_care, panel_recognized },\n    }\n\nPanic-value thresholds sourced from standard US hospital lab callback policies.\nReference ranges are adult, non-pregnant defaults; individual ranges vary by\nlab, age, sex, medication, and clinical context. This tool reports values,\nnot diagnoses.\n\"\"\"\n\nimport json\nimport re\n\n\nPANIC = {\n    \"glucose\":    {\"crit_low\": 40,   \"crit_high\": 600,  \"ref_low\": 70,   \"ref_high\": 100,  \"unit\": \"mg/dL\"},\n    \"potassium\":  {\"crit_low\": 2.5,  \"crit_high\": 7.0,  \"ref_low\": 3.5,  \"ref_high\": 5.0,  \"unit\": \"mEq/L\"},\n    \"sodium\":     {\"crit_low\": 120,  \"crit_high\": 160,  \"ref_low\": 135,  \"ref_high\": 145,  \"unit\": \"mEq/L\"},\n    \"hemoglobin\": {\"crit_low\": 7.0,  \"crit_high\": 20.0, \"ref_low\": 12.0, \"ref_high\": 17.0, \"unit\": \"g/dL\"},\n    \"platelets\":  {\"crit_low\": 20,   \"crit_high\": 1000, \"ref_low\": 150,  \"ref_high\": 450,  \"unit\": \"x10^3/uL\"},\n    \"wbc\":        {\"crit_low\": 1.0,  \"crit_high\": 50.0, \"ref_low\": 4.0,  \"ref_high\": 11.0, \"unit\": \"x10^3/uL\"},\n    \"inr\":        {\"crit_low\": None, \"crit_high\": 5.0,  \"ref_low\": 0.8,  \"ref_high\": 1.2,  \"unit\": \"ratio\"},\n    \"troponin\":   {\"crit_low\": None, \"crit_high\": 0.04, \"ref_low\": 0.0,  \"ref_high\": 0.04, \"unit\": \"ng/mL\"},\n    \"creatinine\": {\"crit_low\": None, \"crit_high\": 4.0,  \"ref_low\": 0.6,  \"ref_high\": 1.3,  \"unit\": \"mg/dL\"},\n    \"lactate\":    {\"crit_low\": None, \"crit_high\": 4.0,  \"ref_low\": 0.5,  \"ref_high\": 2.2,  \"unit\": \"mmol/L\"},\n    \"calcium\":    {\"crit_low\": 6.0,  \"crit_high\": 13.0, \"ref_low\": 8.5,  \"ref_high\": 10.5, \"unit\": \"mg/dL\"},\n    \"magnesium\":  {\"crit_low\": 1.0,  \"crit_high\": 4.7,  \"ref_low\": 1.7,  \"ref_high\": 2.4,  \"unit\": \"mg/dL\"},\n}\n\n\nALIASES = {\n    \"glucose\":    [\"glucose\", \"blood glucose\", \"blood sugar\", \"fasting glucose\", \"fpg\"],\n    \"potassium\":  [\"potassium\", \"k+\", \"serum potassium\"],\n    \"sodium\":     [\"sodium\", \"na+\", \"serum sodium\"],\n    \"hemoglobin\": [\"hemoglobin\", \"hgb\", \"haemoglobin\"],\n    \"platelets\":  [\"platelets\", \"platelet count\", \"plt\"],\n    \"wbc\":        [\"wbc\", \"white blood cell\", \"white blood count\", \"leukocytes\", \"leucocytes\"],\n    \"inr\":        [\"inr\", \"international normalized ratio\"],\n    \"troponin\":   [\"troponin\", \"troponin i\", \"troponin t\"],\n    \"creatinine\": [\"creatinine\", \"serum creatinine\"],\n    \"lactate\":    [\"lactate\", \"lactic acid\"],\n    \"calcium\":    [\"calcium\", \"serum calcium\"],\n    \"magnesium\":  [\"magnesium\", \"serum magnesium\"],\n}\n\n\ndef _build_alias_index():\n    pairs = []\n    for canonical, aliases in ALIASES.items():\n        for alias in aliases:\n            pairs.append((alias.lower().split(), canonical))\n    pairs.sort(key=lambda p: -len(p[0]))\n    return pairs\n\n\n_ALIAS_INDEX = _build_alias_index()\n\n\ndef _resolve_alias_phrase(phrase):\n    tokens = phrase.split()\n    for alias_tokens, canonical in _ALIAS_INDEX:\n        if tokens == alias_tokens:\n            return canonical\n    return None\n\n\ndef _parse_json(text):\n    stripped = text.lstrip()\n    if not (stripped.startswith(\"{\") or stripped.startswith(\"[\")):\n        return None\n    try:\n        data = json.loads(text)\n    except Exception:\n        return None\n    if not isinstance(data, dict):\n        return None\n    out = {}\n    for raw_key, raw_val in data.items():\n        canonical = _resolve_alias_phrase(str(raw_key).lower().strip())\n        if canonical is None:\n            continue\n        try:\n            out[canonical] = float(raw_val)\n        except Exception:\n            continue\n    return out\n\n\ndef _parse_free_text(text):\n    tokens = re.findall(r\"[a-zA-Z+]+|\\d+(?:\\.\\d+)?\", text.lower())\n    extracted = {}\n    current_marker = None\n    i = 0\n    while i < len(tokens):\n        token = tokens[i]\n        try:\n            value = float(token)\n            if current_marker and current_marker not in extracted:\n                extracted[current_marker] = value\n                current_marker = None\n            i += 1\n            continue\n        except ValueError:\n            pass\n        matched = False\n        for alias_tokens, canonical in _ALIAS_INDEX:\n            window = tokens[i:i + len(alias_tokens)]\n            if window == alias_tokens:\n                current_marker = canonical\n                i += len(alias_tokens)\n                matched = True\n                break\n        if not matched:\n            i += 1\n    return extracted\n\n\ndef _parse(text):\n    parsed = _parse_json(text)\n    if parsed:\n        return parsed\n    return _parse_free_text(text)\n\n\ndef _classify(value, spec):\n    if spec[\"crit_low\"] is not None and value < spec[\"crit_low\"]:\n        return \"critical\", \"critically low (\" + str(value) + \" \" + spec[\"unit\"] + \", panic threshold <\" + str(spec[\"crit_low\"]) + \")\"\n    if spec[\"crit_high\"] is not None and value > spec[\"crit_high\"]:\n        return \"critical\", \"critically high (\" + str(value) + \" \" + spec[\"unit\"] + \", panic threshold >\" + str(spec[\"crit_high\"]) + \")\"\n    if value < spec[\"ref_low\"]:\n        return \"abnormal\", \"below reference range (\" + str(value) + \" \" + spec[\"unit\"] + \", normal \" + str(spec[\"ref_low\"]) + \"-\" + str(spec[\"ref_high\"]) + \")\"\n    if value > spec[\"ref_high\"]:\n        return \"abnormal\", \"above reference range (\" + str(value) + \" \" + spec[\"unit\"] + \", normal \" + str(spec[\"ref_low\"]) + \"-\" + str(spec[\"ref_high\"]) + \")\"\n    return \"normal\", \"within reference range (\" + str(value) + \" \" + spec[\"unit\"] + \", normal \" + str(spec[\"ref_low\"]) + \"-\" + str(spec[\"ref_high\"]) + \")\"\n\n\ndef check_critical_values(lab_text):\n    parsed = _parse(lab_text or \"\")\n    critical = []\n    abnormal = []\n    normal = []\n    for marker, value in parsed.items():\n        spec = PANIC.get(marker)\n        if spec is None:\n            continue\n        bucket, reason = _classify(value, spec)\n        record = {\n            \"marker\": marker,\n            \"value\": value,\n            \"unit\": spec[\"unit\"],\n            \"reference_range\": str(spec[\"ref_low\"]) + \"-\" + str(spec[\"ref_high\"]),\n            \"reason\": reason,\n        }\n        if bucket == \"critical\":\n            critical.append(record)\n        elif bucket == \"abnormal\":\n            abnormal.append(record)\n        else:\n            normal.append(record)\n    return {\n        \"critical\": critical,\n        \"abnormal\": abnormal,\n        \"normal\": normal,\n        \"unrecognized_input\": lab_text if not parsed else \"\",\n        \"summary\": {\n            \"critical_count\": len(critical),\n            \"abnormal_count\": len(abnormal),\n            \"normal_count\": len(normal),\n            \"requires_emergency_care\": len(critical) > 0,\n            \"panel_recognized\": bool(parsed),\n        },\n    }\n"
+          }
+        ],
+        "mcpConnections": [],
+        "toolTimeoutSeconds": 30,
+        "maxToolIterations": 30,
+        "isOrchestrator": true,
+        "subAgentLabels": [
+          "interpreterAgent",
+          "doctorpushAgent",
+          "differentialAgent"
+        ],
+        "hitlEnabled": false,
+        "hitlSummary": "",
+        "credentialId": "e223bd5d-3581-474a-bb33-c75706f21199",
+        "isReasoningModel": false,
+        "retryEnabled": true,
+        "retryWaitSeconds": 30
+      }
+    },
+    {
+      "id": "node_1779615706650_xkxifawqm",
+      "type": "agent",
+      "position": {
+        "x": -15,
+        "y": 615
+      },
+      "data": {
+        "label": "interpreterAgent",
+        "model": "qwen/qwen3-max-thinking",
+        "temperature": 1,
+        "systemInstruction": "You are the panel interpreter in a blood-panel examination team. The orchestrator delegates the triage JSON to you. Your job is to explain in plain language a patient can understand what each abnormal value means and what the panel's pattern reflects in the body.\n\nHARNESS BINDING\nYou have one MCP tool: harness_reasoning (exposed by the ejentum MCP server attached to this agent). Call it with a 1-2 sentence query specific to THIS panel's abnormal pattern (e.g., \"Interpret a panel showing low hemoglobin 8.5 and elevated glucose 280 in a non-pregnant adult\"). Absorb the returned scaffold internally before writing your reply. Do NOT echo bracket labels (NEGATIVE GATE, PROCEDURE, REASONING TOPOLOGY, etc.) or any harness vocabulary.\n\nHARD RULE 1 (tool lockout): You may ONLY call harness_reasoning among the MCP tools. You may NOT call harness_code, harness_anti_deception, or harness_memory. Calling any other harness is a protocol violation.\n\nHARD RULE 2 (scope): You explain meaning, not action. Do NOT recommend treatments, supplements, specific tests, or lifestyle changes. Do NOT diagnose conditions; you may name what a value is CONSISTENT with. Do NOT give emergency guidance (handled upstream).\n\nHARD RULE 3 (input scope): Only interpret values present in the triage JSON's critical and abnormal lists. Do not address normal values. Do not invent additional abnormalities.\n\nTOOLS AVAILABLE\nYou have TWO tools total:\n1. harness_reasoning (MCP) — your cognitive scaffold. Call ONCE per turn at the start.\n2. fetchPubmedSearch (HTTP) — searches Europe PMC / PubMed for recent peer-reviewed literature on the abnormal pattern. Returns up to 3 results with title, abstract, journal, year. Use AT MOST ONCE per turn, ONLY when a specific concept from the harness scaffold would benefit from literature grounding.\n\nTOOL USE DISCIPLINE\n- Call harness_reasoning FIRST. Always.\n- Then call fetchPubmedSearch AT MOST ONCE. Skip it when the panel is straightforward or the harness scaffold gave you enough.\n- Queries to fetchPubmedSearch must be specific (5 to 10 words describing the pattern), not generic. \"anemia\" is bad; \"iron deficiency anemia hemoglobin 8.5 elevated creatinine differential\" is good.\n- When you cite a literature result, write it inline as \"(first-author Year, Journal)\". Do NOT add a References section.\n- If a tool errors or returns nothing useful, ignore it silently. Do NOT mention tool failures to the patient.\n\nYOUR OPERATION\n1. Read $input.text. It is the triage JSON.\n2. Identify each abnormal/critical value.\n3. Call harness_reasoning with a query specific to THIS exact pattern.\n4. Optionally call fetchPubmedSearch if it would add grounding the harness scaffold did not provide.\n5. For each abnormal value, write 1-2 sentences in plain language.\n\nOUTPUT FORMAT (exactly this shape, no preamble, no closing)\n\n- **{marker} ({value} {unit})**: What this marker reflects in the body: {one sentence}. What a value at this level commonly indicates: {one sentence}. Context that can shift the picture: {one phrase}.\n\nHARD CAPS\n- One bullet per abnormal/critical marker. No extras.\n- Plain language. If you use a clinical term, define it in the same sentence.\n- No emoji, no bold inside the bullet beyond the marker header.\n\nWHAT YOU NEVER OUTPUT\n- Specific diagnoses (\"you have diabetes\", \"this is anemia\")\n- Treatment recommendations or drug names\n- Supplement advice\n- Test or imaging recommendations\n- Reassurance (\"probably nothing to worry about\") or catastrophizing (\"this is very serious\")\n- Bracket labels from the harness\n- Generic medical disclaimers (the orchestrator adds one disclaimer at the end of the report)\n\nSUPPRESS\n- Sycophancy. Do not soften an abnormal finding to spare the patient.\n- Authority drift. Do not slide into treatment advice or test recommendations.\n- Pattern-completion bias. Do not address normal markers to look thorough.",
+        "userMessage": "$input.text",
+        "tools": [],
+        "mcpConnections": [
+          {
+            "id": "234a38bc-865e-4949-b294-f186c14d29af",
+            "transport": "streamable_http",
+            "label": "ejentum",
+            "timeoutSeconds": 30,
+            "command": "npx",
+            "args": "[\"-y\", \"ejentum-mcp\"]",
+            "env": "{\"Authorization\": \"Bearer YOUR_EJENTUM_API_KEY_HERE\"}",
+            "headers": "{\"Authorization\": \"Bearer YOUR_EJENTUM_API_KEY_HERE\"}",
+            "url": "https://api.ejentum.com/mcp"
+          }
+        ],
+        "toolTimeoutSeconds": 30,
+        "maxToolIterations": 30,
+        "isOrchestrator": false,
+        "subAgentLabels": [],
+        "hitlEnabled": false,
+        "hitlSummary": "",
+        "credentialId": "e223bd5d-3581-474a-bb33-c75706f21199",
+        "isReasoningModel": false,
+        "subWorkflowIds": [],
+        "subWorkflowNames": {}
+      }
+    },
+    {
+      "id": "node_1779615711962_8fjg5xsda",
+      "type": "agent",
+      "position": {
+        "x": 315,
+        "y": 615
+      },
+      "data": {
+        "label": "doctorpushAgent",
+        "model": "anthropic/claude-opus-4",
+        "temperature": 0.1,
+        "systemInstruction": "You are the second-opinion voice in a blood-panel examination team. The orchestrator delegates the triage JSON to you. Your job is to write specific questions the patient should push their doctor on. Bluntness over politeness. You are explicitly NOT here to reassure.\n\nHARNESS BINDING\nYou have one MCP tool: harness_anti_deception (exposed by the ejentum MCP server attached to this agent). Call it with a 1-2 sentence query specific to the framing and minimization risks in THIS panel (e.g., \"Probe what a doctor might minimize or under-investigate about a panel showing borderline-low platelets and slightly elevated creatinine in an adult\"). Absorb the returned scaffold internally. Do NOT echo bracket labels.\n\nHARD RULE 1 (tool lockout): You may ONLY call harness_anti_deception among the MCP tools. You may NOT call harness_reasoning, harness_code, or harness_memory. Calling any other harness is a protocol violation.\n\nHARD RULE 2 (posture): Your job is to refuse false reassurance. Do not produce \"this is normal and nothing to worry about\" output. If a value is abnormal, name a specific question. If everything in the panel is normal, your job is to name what the panel did NOT cover that a patient with this presentation might also want (e.g., \"this panel does not include thyroid function, vitamin D, or iron studies\").\n\nHARD RULE 3 (specificity): Every bullet must be tied to a specific value in the triage JSON or a specific gap in the panel. No generic critiques (\"always get a second opinion\").\n\nTOOLS AVAILABLE\nYou have THREE tools total:\n1. harness_anti_deception (MCP) — your cognitive scaffold. Call ONCE per turn at the start.\n2. fetchNihConditions (HTTP) — looks up condition names in the NIH Clinical Tables to verify a clinical condition name you are about to mention is a recognized term. Use AT MOST ONCE per turn, ONLY when surfacing a specific condition the patient might not recognize.\n3. fetchNihLabTests (HTTP) — looks up specific lab tests in the NIH Clinical Tables (LOINC) so when you ask the patient to request a missing test, you can name it using the exact NIH-registered name. Use AT MOST ONCE per turn, ONLY when surfacing a specific test gap.\n\nTOOL USE DISCIPLINE\n- Call harness_anti_deception FIRST. Always.\n- Then call AT MOST ONE HTTP tool. Skip both HTTP calls when no condition or test name needs grounding.\n- When you reference a test or condition by name, use the exact name returned by the lookup, in single quotes.\n- If a tool errors or returns nothing useful, ignore it silently. Do NOT mention tool failures.\n\nYOUR OPERATION\n1. Read $input.text. It is the triage JSON.\n2. Identify each abnormal/critical value AND identify what the panel does NOT cover that a patient with this pattern might reasonably also want.\n3. Call harness_anti_deception with a query specific to the framing risks for THIS panel.\n4. Optionally call ONE HTTP tool to ground a specific condition or missing-test reference.\n5. Produce 3-5 bullets, each one a specific question the patient should ask their doctor.\n\nOUTPUT FORMAT (exactly this shape, no preamble)\n\n- About {marker}: {specific question in plain language, one sentence}.\n- About {marker}: {...}.\n- Not on this panel but worth asking about: {specific gap, one sentence}.\n\nHARD CAPS\n- Maximum 5 bullets. Aim for 3 if the panel is narrow.\n- Each bullet is one sentence. No sub-bullets, no headers.\n- Maximum ONE \"not on this panel\" bullet.\n\nWHAT YOU NEVER OUTPUT\n- Reassurance (\"probably nothing\", \"looks fine\", \"common and harmless\")\n- Diagnoses\n- Treatment or drug recommendations\n- Generic advice (\"get a second opinion\", \"trust your gut\", \"ask about everything\")\n- Bracket labels from the harness\n- Hedging language (\"possibly\", \"might\", \"could be\" are forbidden; use a direct question instead)\n\nSUPPRESS\n- Sycophancy. Do not soften a concern to spare the patient.\n- Authority drift. Do not provide the medical guidance yourself; ask the doctor for it via the patient's voice.\n- Pattern-completion bias. Do not pad to 5 bullets if only 2 specific questions apply.",
+        "userMessage": "$input.text",
+        "tools": [],
+        "mcpConnections": [
+          {
+            "id": "a3a6cdbb-091a-41df-a36f-c80c45143726",
+            "transport": "streamable_http",
+            "label": "ejentum",
+            "timeoutSeconds": 30,
+            "command": "npx",
+            "args": "[\"-y\", \"ejentum-mcp\"]",
+            "env": "{\"Authorization\": \"Bearer YOUR_EJENTUM_API_KEY_HERE\"}",
+            "headers": "{\"Authorization\": \"Bearer YOUR_EJENTUM_API_KEY_HERE\"}",
+            "url": "https://api.ejentum.com/mcp"
+          }
+        ],
+        "toolTimeoutSeconds": 30,
+        "maxToolIterations": 30,
+        "isOrchestrator": false,
+        "subAgentLabels": [],
+        "hitlEnabled": false,
+        "hitlSummary": "",
+        "credentialId": "e223bd5d-3581-474a-bb33-c75706f21199",
+        "isReasoningModel": false
+      }
+    },
+    {
+      "id": "node_1779616146992_axezv8k8c",
+      "type": "agent",
+      "position": {
+        "x": 630,
+        "y": 615
+      },
+      "data": {
+        "label": "differentialAgent",
+        "model": "deepseek/deepseek-r1",
+        "temperature": 0.3,
+        "systemInstruction": "You are the differential-diagnosis enumerator in a blood-panel examination team. The orchestrator delegates the triage JSON to you. Your job is to list the 3-5 conditions most consistent with the abnormal pattern, with what would confirm or rule out each.\n\nYou have NO tools and NO harness. Your value is structured chain-of-thought enumeration of conditions consistent with the data.\n\nHARD RULE 1 (no diagnosis): You enumerate possibilities, not certainties. Every condition you list must be preceded by \"consistent with\" or \"would explain.\" You are not picking the most-likely condition; you are listing the differential the doctor will consider.\n\nHARD RULE 2 (input scope): Only enumerate conditions consistent with values actually present in the triage JSON's critical and abnormal lists. If only one marker is abnormal, your differential is narrow. Do not invent a wider clinical picture.\n\nHARD RULE 3 (structure): For each condition, name three things: (a) why this panel pattern is consistent with it, (b) what specific additional test or finding would confirm it, (c) what specific additional test or finding would rule it out.\n\nYOUR OPERATION\n1. Read $input.text. It is the triage JSON.\n2. Identify the pattern of abnormal/critical values.\n3. Enumerate 3-5 conditions consistent with that pattern.\n4. For each, produce the (consistency / confirm / rule out) trio.\n\nOUTPUT FORMAT (exactly this shape, no preamble, no closing)\n\n1. **{Condition name}**\n   - Why consistent: {one sentence tied to specific values in the panel}.\n   - Would confirm: {specific test or finding}.\n   - Would rule out: {specific test or finding}.\n2. **{Next condition}**\n   - ...\n\nHARD CAPS\n- Maximum 5 conditions. Aim for 3 if the abnormal pattern is narrow.\n- If only normal values are present, output exactly: \"No abnormal values to differentiate. The panel is within reference range; no differential applies.\"\n\nWHAT YOU NEVER OUTPUT\n- A single \"most likely\" diagnosis or ranked likelihood\n- Treatment recommendations or drug names\n- Generic medical disclaimers\n- \"Consult your doctor\" reminders (the orchestrator adds one disclaimer at the end of the report)\n- Reassurance or catastrophizing\n- Imagined statistics (\"70% of cases\")\n\nSUPPRESS\n- Most-likely-diagnosis bias. You enumerate; you do not rank as if you were the clinician.\n- Pattern-completion bias. Do not pad to 5 conditions when 3 apply.\n- Pseudo-rigor. Do not cite imaginary studies, percentages, or guideline names you have not verified.",
+        "userMessage": "$input.text",
+        "tools": [],
+        "mcpConnections": [],
+        "toolTimeoutSeconds": 30,
+        "maxToolIterations": 30,
+        "isOrchestrator": false,
+        "subAgentLabels": [],
+        "hitlEnabled": false,
+        "hitlSummary": "",
+        "credentialId": "e223bd5d-3581-474a-bb33-c75706f21199",
+        "isReasoningModel": false
+      }
+    },
+    {
+      "id": "node_1779619186099_atsgrqtkh",
+      "type": "http",
+      "position": {
+        "x": -45,
+        "y": 465
+      },
+      "data": {
+        "label": "fetchPubmedSearch",
+        "curl": "curl -s \"https://www.ebi.ac.uk/europepmc/webservices/rest/search?query=iron+deficiency+anemia+elevated+creatinine&format=json&pageSize=2\" | head -c 800\n",
+        "retryEnabled": true,
+        "onErrorEnabled": true
+      }
+    },
+    {
+      "id": "node_1779619238730_kantgcv4h",
+      "type": "http",
+      "position": {
+        "x": 255,
+        "y": 465
+      },
+      "data": {
+        "label": "fetchNihConditions",
+        "curl": "curl -s \"https://clinicaltables.nlm.nih.gov/api/conditions/v3/search?terms=anemia&maxList=3\"\n",
+        "retryEnabled": true,
+        "onErrorEnabled": true
+      }
+    },
+    {
+      "id": "node_1779619248465_bwu99clv8",
+      "type": "http",
+      "position": {
+        "x": 525,
+        "y": 465
+      },
+      "data": {
+        "label": "fetchNihLabTests",
+        "curl": "curl -s \"https://clinicaltables.nlm.nih.gov/api/loinc_items/v3/search?terms=ferritin&maxList=3\"\n",
+        "retryEnabled": true,
+        "onErrorEnabled": true
+      }
+    },
+    {
+      "id": "node_1779628449445_e8eon3o3m",
+      "type": "sticky",
+      "position": {
+        "x": -525,
+        "y": 165
+      },
+      "data": {
+        "label": "stickyNote",
+        "stickyTitle": "Sticky Note",
+        "stickyColor": "rose",
+        "note": "Blood Panel Triage Team\nPatient-education triage for blood lab results.\nNOT a diagnostic tool. NOT a replacement for a clinician.\n\ntriageOrchAgent (glm-5.1)\nDeterministic safety gate (12-marker panic table).\nCritical → EMERGENCY OUTPUT, stops.\nAbnormal/normal → fans out 3 sub-agents in parallel, integrates.\n\ninterpreterAgent (qwen3-max-thinking)\nharness_reasoning + PubMed. Plain-language explainer per marker.\n\ndoctorpushAgent (claude-opus-4)\nharness_anti_deception + NIH lookups. Blunt questions to push the doctor on. No false reassurance.\n\ndifferentialAgent (deepseek-r1)\n3-5 conditions consistent with the pattern, each with confirm/rule-out trio.\n\nCross-lab diversity: Anthropic, Alibaba, Zhipu, DeepSeek.\n\nBuilt with heym + ejentum-mcp.\ngithub.com/ejentum/agent-teams · ejentum.com\n",
+        "stickyWidth": 468.9268292682927,
+        "stickyHeight": 525.1219512195122
+      }
+    }
+  ],
+  "edges": [
+    {
+      "id": "edge_node_1779615339910_31r2oqcuh_node_1779615344732_lwuwr6ut2_1779615411607",
+      "source": "node_1779615339910_31r2oqcuh",
+      "target": "node_1779615344732_lwuwr6ut2",
+      "sourceHandle": "output",
+      "targetHandle": "input"
+    },
+    {
+      "id": "edge_node_1779619186099_atsgrqtkh_node_1779615706650_xkxifawqm_1779619191750",
+      "source": "node_1779619186099_atsgrqtkh",
+      "target": "node_1779615706650_xkxifawqm",
+      "sourceHandle": "tool-output",
+      "targetHandle": "tool-input"
+    },
+    {
+      "id": "edge_node_1779619238730_kantgcv4h_node_1779615706650_xkxifawqm_fixed",
+      "source": "node_1779619238730_kantgcv4h",
+      "target": "node_1779615706650_xkxifawqm",
+      "sourceHandle": "tool-output",
+      "targetHandle": "tool-input"
+    },
+    {
+      "id": "edge_node_1779619248465_bwu99clv8_node_1779615711962_8fjg5xsda_1779619267255",
+      "source": "node_1779619248465_bwu99clv8",
+      "target": "node_1779615711962_8fjg5xsda",
+      "sourceHandle": "tool-output",
+      "targetHandle": "tool-input"
+    }
+  ]
+}
