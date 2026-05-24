@@ -14,6 +14,9 @@ A 4-agent team (architect + reasoner + implementer + reviewer) for [heym](https:
 ### [eval](./eval)
 Evaluation framework for comparing baseline LLM output against Ejentum-augmented LLM output, with a third-party blind judge. Available as n8n workflows, a Python CLI, and integration patterns for agentic IDEs (Cursor, Antigravity, Claude Code). The instrument is the artifact: import, run on your own prompts, see the diff. [→ Spec and integrations](./eval/README.md)
 
+### [agent_evaluation_module_xp95](./agent_evaluation_module_xp95)
+A single-HTML side-by-side blind evaluation module for any OpenAI-compatible LLM, with optional Ejentum harness wired in as a tool call. Two agents answer the same prompt; a blind judge scores both; results revealed only after scoring. One stdlib Python proxy serves the HTML, no build step, no framework, no install. [→ Setup and how to wire it](./agent_evaluation_module_xp95/README.md)
+
 ### [blind-eval-trio](./blind-eval-trio)
 A 3-agent team for [heym](https://heym.run) v0.0.20+ that performs **pre-commitment self-evaluation for agent runtimes**. Submit (task, planned method); three blind cross-lab evaluators (steelman defends, stress_test attacks, gap_finder finds what's missing) return three independent perspectives. Calling agent integrates them — no synthesizer. Models cannot reliably self-evaluate; this is the structural fix. Validated across engineering refactors, payments migration, security incident response, investigative reasoning. [→ Setup and verification tests](./blind-eval-trio/README.md)
 
