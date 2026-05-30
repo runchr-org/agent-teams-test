@@ -185,7 +185,7 @@ def run_eval(
     ejentum_url = (
         ejentum_api_url
         or os.environ.get("EJENTUM_API_URL")
-        or "https://ejentum-main-ab125c3.zuplo.app/logicv1/"
+        or "https://api.ejentum.com/harness/"
     )
     for name, val in [
         ("OPENAI_API_KEY", openai_key),

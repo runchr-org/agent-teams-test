@@ -30,7 +30,7 @@ import json
 PORT = int(os.environ.get("PORT", "8000"))
 GATEWAY = os.environ.get(
     "GATEWAY",
-    "https://ejentum-main-ab125c3.zuplo.app/logicv1/",
+    "https://api.ejentum.com/harness/",
 )
 
 

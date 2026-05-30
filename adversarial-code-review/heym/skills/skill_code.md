@@ -33,7 +33,7 @@ This tool augments YOUR code generation. When you call it, you receive a cogniti
 ## HOW TO CALL
 
 ```
-POST https://ejentum-main-ab125c3.zuplo.app/logicv1/
+POST https://api.ejentum.com/harness/
 Authorization: Bearer $EJENTUM_API_KEY
 Content-Type: application/json
 
@@ -95,7 +95,7 @@ Parse the value of the mode-named key. The string is ready to use.
 | Code | Meaning | Action |
 |:-----|:--------|:-------|
 | `401` | Invalid API key | Tell the user their key needs checking |
-| `403` | Multi mode requires Haki plan | Retry with `"mode": "code"` |
+| `403` | Adaptive mode requires Go or Super tier | Retry with `"mode": "code"` |
 | `429` | Rate limit or quota exceeded | Tell the user they've hit their limit |
 | `500` | Server error | Proceed without; do not retry |
 
@@ -146,7 +146,7 @@ After writing your code, **actively scan it** against each suppressed pattern. I
 ### 7. Verify against `[VERIFICATION]`
 This is a concrete pass/fail criterion about your code's correctness. If your code fails it, restructure.
 
-### 8. (Multi mode only) Execute `[META-CHECKPOINT]` before responding
+### 8. (Adaptive mode only) Execute `[META-CHECKPOINT]` before responding
 Run each check against your code. If ANY check fails → follow `[ON_FAILURE]`: abandon the structured approach, reason freely about which engineering assumption broke, then re-enter at the appropriate step.
 
 **Precedence:** If the injection's topology leads to a different algorithm or architecture than your first choice; follow the topology. The injection was matched to the task's specific failure pattern. Your first instinct was not.
@@ -311,7 +311,7 @@ You do not choose the domain. The API routes automatically. Knowing them helps c
 1. DECIDE     → Task matches a code pattern? Yes → call. No → skip.
 2. MODE       → Single concern → "code". Cross-cutting → "code-multi".
 3. CRAFT      → Specific task + failure risk in 1-2 sentences
-4. CALL       → POST /logicv1/ with query + mode
+4. CALL       → POST /harness/ with query + mode
 5. VALIDATE   → Non-empty response, key matches mode. Relevance check on CODE FAILURE.
 6. ABSORB     → CODE FAILURE (wrong code), PROCEDURE (plan + backtrack), SUPPRESS (blockers)
 7. EXECUTE    → Write code following topology, compare against CORRECT PATTERN

@@ -12,7 +12,7 @@ Usage:
   export OPENAI_API_KEY=sk-...
   export GEMINI_API_KEY=AI...
   export EJENTUM_API_KEY=zpka_...
-  export EJENTUM_API_URL=https://ejentum-main-ab125c3.zuplo.app/logicv1/
+  export EJENTUM_API_URL=https://api.ejentum.com/harness/
   python run.py
 
 All file I/O is relative to this folder. No local paths.
@@ -29,7 +29,7 @@ ROOT = Path(__file__).parent
 OPENAI_KEY = os.environ.get("OPENAI_API_KEY")
 GEMINI_KEY = os.environ.get("GEMINI_API_KEY")
 EJENTUM_KEY = os.environ.get("EJENTUM_API_KEY")
-EJENTUM_URL = os.environ.get("EJENTUM_API_URL", "https://ejentum-main-ab125c3.zuplo.app/logicv1/")
+EJENTUM_URL = os.environ.get("EJENTUM_API_URL", "https://api.ejentum.com/harness/")
 
 for name, val in [("OPENAI_API_KEY", OPENAI_KEY), ("GEMINI_API_KEY", GEMINI_KEY), ("EJENTUM_API_KEY", EJENTUM_KEY)]:
     if not val:

@@ -20,7 +20,7 @@ Three roles. Each is a single LLM call. No memory, no multi-turn state.
 
 - **Model:** same as baseline (critical for fairness)
 - **System prompt:** `system_prompts/ejentum_producer.md`
-- **Input:** the user prompt, prefixed with `[COGNITIVE SCAFFOLD]` block retrieved from the Ejentum Logic API
+- **Input:** the user prompt, prefixed with `[COGNITIVE SCAFFOLD]` block retrieved from the Ejentum API
 - **Output:** a natural-language response
 - **Tools:** none (scaffold retrieval happens before the LLM call)
 
@@ -37,7 +37,7 @@ Three roles. Each is a single LLM call. No memory, no multi-turn state.
 ```
 user_prompt
      |
-     +--------- call Ejentum Logic API (mode=reasoning)
+     +--------- call Ejentum API (mode=reasoning)
      |                |
      |                v
      |          cognitive_scaffold
@@ -53,9 +53,9 @@ Blind Evaluator (sees A/B, not baseline/ejentum) ----> evaluation JSON
 Final output: { user_message, baseline_response, ejentum_response, evaluation }
 ```
 
-## Ejentum Logic API call
+## Ejentum API call
 
-**Endpoint:** `https://ejentum-main-ab125c3.zuplo.app/logicv1/`
+**Endpoint:** `https://api.ejentum.com/harness/`
 
 **Method:** `POST`
 

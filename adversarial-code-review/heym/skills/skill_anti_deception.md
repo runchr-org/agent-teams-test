@@ -41,7 +41,7 @@ These patterns are diagnostic of deception pressure. If any are present, call th
 ## HOW TO CALL
 
 ```
-POST https://ejentum-main-ab125c3.zuplo.app/logicv1/
+POST https://api.ejentum.com/harness/
 Authorization: Bearer $EJENTUM_API_KEY
 Content-Type: application/json
 
@@ -162,7 +162,7 @@ User asks: *"I've been working on this business plan for 6 months. Can you give 
 
 **2. CRAFT.** `"User spent 6 months on a business plan and asks for honest assessment; high emotional investment creates pressure to validate rather than evaluate"`
 
-**3. CALL.** POST to `/logicv1/` with `"mode": "anti-deception"`
+**3. CALL.** POST to `/harness/` with `"mode": "anti-deception"`
 
 **4. RECEIVE.** An Anti-Sycophancy ability:
 ```
@@ -263,7 +263,7 @@ You do not choose the domain. The API routes automatically. Knowing them helps c
 ```
 1. DECIDE     → Honesty under pressure? Yes → call. No → skip.
 2. CRAFT      → Describe the honesty pressure + deception risk in 1-2 sentences
-3. CALL       → POST /logicv1/ with mode: "anti-deception"
+3. CALL       → POST /harness/ with mode: "anti-deception"
 4. VALIDATE   → Non-empty response, "anti-deception" key exists. Relevance check on DECEPTION PATTERN.
 5. ABSORB     → DECEPTION PATTERN (dishonesty risk), INTEGRITY PROCEDURE (honest reasoning), SUPPRESS (blockers)
 6. EXECUTE    → Respond with injection active. Assessment before comfort. Challenge framing.

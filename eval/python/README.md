@@ -78,6 +78,6 @@ Zero runtime dependencies beyond native `fetch` (Node 18+, Deno, Bun, browsers, 
 
 ## Credits
 
-Ejentum Logic API: https://ejentum.com
+Ejentum API: https://ejentum.com
 
 Pattern authored for the Ejentum n8n eval workflow (`Reasoning_Harness_Eval_Workflow`), ported to TypeScript for Antigravity and other agentic IDE environments.

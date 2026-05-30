@@ -1,6 +1,6 @@
 # Response B: GPT-4o with Ejentum Reasoning Injection
 
-Same medical prompt, same model, temperature 0. System prompt includes the Ejentum reasoning skill file. Agent called the Ejentum Logic API autonomously via function-call, absorbed the returned scaffold, then generated this response.
+Same medical prompt, same model, temperature 0. System prompt includes the Ejentum reasoning skill file. Agent called the Ejentum API autonomously via function-call, absorbed the returned scaffold, then generated this response.
 
 ---
 

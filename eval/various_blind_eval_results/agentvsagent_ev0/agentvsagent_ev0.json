@@ -10,7 +10,7 @@
   },
   "agents": {
     "A": "GPT-4.1 baseline. System prompt: strategic advisor to founder at {{company_name}}. No harness.",
-    "B": "GPT-4.1 + Reasoning+Anti-Deception harness via Ejentum Logic API. System prompt: strategic advisor preamble + tool response interpretation rules (imperative reframe) + reasoning skill file + anti-deception addendum + forced pattern enumeration block."
+    "B": "GPT-4.1 + Reasoning+Anti-Deception harness via Ejentum API. System prompt: strategic advisor preamble + tool response interpretation rules (imperative reframe) + reasoning skill file + anti-deception addendum + forced pattern enumeration block."
   },
   "evaluator": {
     "model": "gemini-3-flash-preview",

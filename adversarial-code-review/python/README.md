@@ -9,7 +9,7 @@ A pure-Python orchestrator port of the adversarial code review team. Until this 
 Will use the same orchestrator pattern as [`agent-teams/eval/python/orchestrator.py`](../../eval/python/orchestrator.py), adapted for code review specifically:
 
 - **Architect:** a pure orchestration loop that classifies the PR, decomposes review angles, delegates to three specialists in parallel via async I/O (asyncio.gather), integrates evidence into the structured verdict schema.
-- **Specialists:** each is a function that (1) calls an LLM API (Anthropic / Google / OpenRouter) with the system prompt + skill content prepended, (2) calls the Ejentum Logic API to absorb its scaffold, (3) produces output in the team's structured format.
+- **Specialists:** each is a function that (1) calls an LLM API (Anthropic / Google / OpenRouter) with the system prompt + skill content prepended, (2) calls the Ejentum API to absorb its scaffold, (3) produces output in the team's structured format.
 - **Output:** same VERDICT / CHANGE_CLASSIFICATION / FRAMING_NOTES / CONCERNS schema as the heym version.
 
 Zero runtime dependencies beyond the standard library + an HTTP client (httpx or requests). No agent framework needed; the orchestrator IS the framework.

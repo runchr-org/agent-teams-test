@@ -14,7 +14,7 @@ See [agent_vs_agent_multi_turn/README.md](agent_vs_agent_multi_turn/README.md) f
 
 ### [menu_rag_blind_eval/](menu_rag_blind_eval/)
 
-RAG-specific A/B pattern. Two identical Claude Haiku 4.5 producers run against the same 49-chunk Qdrant menu collection with engineered gaps (no systematic dietary tags, partial wine pairings, no calorie data, kitchen cross-contamination disclaimer). The only difference: one has the Ejentum Logic API wired in as a runtime tool with a WHEN-TO-CALL clause for safety, dietary, out-of-scope, and conflict questions. Four blind judges from four different labs (Moonshot, Anthropic, MiniMax, DeepSeek) score on a five-dimension rubric and a deterministic aggregator produces structured stats for a synthesizer agent to write findings from.
+RAG-specific A/B pattern. Two identical Claude Haiku 4.5 producers run against the same 49-chunk Qdrant menu collection with engineered gaps (no systematic dietary tags, partial wine pairings, no calorie data, kitchen cross-contamination disclaimer). The only difference: one has the Ejentum API wired in as a runtime tool with a WHEN-TO-CALL clause for safety, dietary, out-of-scope, and conflict questions. Four blind judges from four different labs (Moonshot, Anthropic, MiniMax, DeepSeek) score on a five-dimension rubric and a deterministic aggregator produces structured stats for a synthesizer agent to write findings from.
 
 Shipped example: ten test questions covering nine failure modes (missing-field, conflict, allergen, out-of-scope, name-vs-ingredient, compound dietary, undisclosed allergen, certification-grade, fabrication trap). Reference result (A=418, B=426 across 19 judge calls on the second half of the suite) lives in [`../various_blind_eval_results/menu_rag_5q/`](../various_blind_eval_results/menu_rag_5q/).
 
@@ -32,6 +32,6 @@ Create a new subfolder at this level (`n8n/your_workflow_name/`). Inside, put th
 
 ## Calling Ejentum from n8n
 
-Each workflow above ships with the Ejentum Logic API wired in as the example tool. If you want context on how to set up the HTTP node, configure header auth, pick a mode, or read responses, the canonical walkthrough is at [ejentum.com/docs/n8n_guide](https://ejentum.com/docs/n8n_guide). The raw request/response contract is at [ejentum.com/docs/api_reference](https://ejentum.com/docs/api_reference). Free key (100 calls, no card): [ejentum.com](https://ejentum.com).
+Each workflow above ships with the Ejentum API wired in as the example tool. If you want context on how to set up the HTTP node, configure header auth, pick a mode, or read responses, the canonical walkthrough is at [ejentum.com/docs/n8n_guide](https://ejentum.com/docs/n8n_guide). The raw request/response contract is at [ejentum.com/docs/api_reference](https://ejentum.com/docs/api_reference). Free key (30-day trial, no card): [ejentum.com](https://ejentum.com).
 
 You do not need any of these to run the workflows in this repo: bind the Header Auth credential per each workflow's setup table and click execute. The guide is for when you want to swap modes, build your own n8n integration around the tool, or understand what the harness is actually returning.

@@ -37,7 +37,7 @@ Each call returns a structured cognitive scaffold the agent absorbs before respo
 ## Quick import
 
 1. **Install the community node.** In n8n: Settings → Community Nodes → Install → enter `n8n-nodes-ejentum` → confirm.
-2. **Get an Ejentum API key** at [ejentum.com](https://ejentum.com) (free tier, 100 calls, no card).
+2. **Get an Ejentum API key** at [ejentum.com](https://ejentum.com) (30-day free trial, no card).
 3. **Get an OpenRouter API key** at [openrouter.ai/keys](https://openrouter.ai/keys), or swap in any chat model node you prefer.
 4. **Import the workflow.** Workflows → Import from File → select [community_node_quickstart.json](community_node_quickstart.json).
 5. **Set two credentials:** the Ejentum API credential on the four harness nodes, and OpenRouter on the chat model node.

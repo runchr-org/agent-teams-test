@@ -168,7 +168,7 @@ Any reverse proxy (nginx, Caddy, Cloudflare Workers) that forwards `POST /ejentu
 Override the listening port or gateway URL via environment variables:
 
 ```bash
-PORT=8080 GATEWAY=https://my-gateway.example.com/logicv1/ python serve.py
+PORT=8080 GATEWAY=https://my-gateway.example.com/harness/ python serve.py
 ```
 
 ## What gets persisted

@@ -11,7 +11,7 @@ A published replication artifact of a single run of the eval workflow on a medic
 | [system_prompts/augmented.md](system_prompts/augmented.md) | Full system prompt given to Agent B (structure + tool schema + what was actually called) |
 | [system_prompts/evaluator.md](system_prompts/evaluator.md) | Full system prompt given to the blind judge |
 | [skill_used.md](skill_used.md) | The Ejentum reasoning skill file content concatenated into Agent B's system prompt |
-| [scaffold.md](scaffold.md) | The live API scaffold returned by the Ejentum Logic API for Agent B's tool call |
+| [scaffold.md](scaffold.md) | The live API scaffold returned by the Ejentum API for Agent B's tool call |
 | [response_baseline.md](response_baseline.md) | Agent A output: plain GPT-4o, no scaffold |
 | [response_ejentum.md](response_ejentum.md) | Agent B output: GPT-4o + Ejentum reasoning scaffold injected at runtime |
 | [verdict.json](verdict.json) | Blind Gemini Flash verdict with per-dimension scores and justifications |
@@ -22,7 +22,7 @@ A published replication artifact of a single run of the eval workflow on a medic
 Production A/B pattern from the [Ejentum benchmarks](https://github.com/ejentum/builders_playbook):
 
 - **Agent A (baseline):** `gpt-4o` at temperature 0, plain system prompt, no tools.
-- **Agent B (augmented):** `gpt-4o` at temperature 0, same medical prompt, **full Ejentum reasoning skill file** loaded as system prompt, autonomous function-call access to the Ejentum Logic API. `tool_choice` is **forced** to guarantee the API is called; the agent picks the query and mode itself. The API response is injected as a `role: tool` message, then the agent generates its final answer with the scaffold in context.
+- **Agent B (augmented):** `gpt-4o` at temperature 0, same medical prompt, **full Ejentum reasoning skill file** loaded as system prompt, autonomous function-call access to the Ejentum API. `tool_choice` is **forced** to guarantee the API is called; the agent picks the query and mode itself. The API response is injected as a `role: tool` message, then the agent generates its final answer with the scaffold in context.
 - **Blind evaluator:** `gemini-flash-latest` at temperature 0. Different model family from the producers (no shared-bias contamination). Receives user prompt, Response A, Response B as neutral labels. Scores each on 5 dimensions (specificity, posture, depth, actionability, honesty). Returns structured JSON with a verdict.
 - **Identical system prompts between A and B** except for the scaffold-access block added to B.
 - **No hand-crafted scaffold.** The scaffold returned by the Ejentum API for this prompt is saved verbatim in [scaffold.md](scaffold.md).
@@ -55,7 +55,7 @@ Evaluator's stated reason:
    export OPENAI_API_KEY=sk-...
    export GEMINI_API_KEY=AI...
    export EJENTUM_API_KEY=zpka_...
-   export EJENTUM_API_URL=https://ejentum-main-ab125c3.zuplo.app/logicv1/
+   export EJENTUM_API_URL=https://api.ejentum.com/harness/
    ```
 3. Run:
    ```bash

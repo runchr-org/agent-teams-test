@@ -77,7 +77,7 @@ Then pick a workflow and follow its README:
 
 If you keep the Ejentum example tool wired into a workflow, the resources below explain what it is and how to call it. None of them are required to run the eval; the Header Auth credential plus an API key from the home page is enough to execute every workflow in this repo.
 
-- **Home (free key, 100 calls, no card):** [ejentum.com](https://ejentum.com)
+- **Home (free key, 30-day trial, no card):** [ejentum.com](https://ejentum.com)
 - **Calling Ejentum from n8n (HTTP node setup, header auth, mode selection, screenshots):** [ejentum.com/docs/n8n_guide](https://ejentum.com/docs/n8n_guide)
 - **API reference (request/response shape, mode catalog):** [ejentum.com/docs/api_reference](https://ejentum.com/docs/api_reference)
 - **Product layers (what each mode does):** [Reasoning](https://ejentum.com/docs/reasoning_harness) · [Anti-Deception](https://ejentum.com/docs/anti_deception) · [Code](https://ejentum.com/docs/code_harness) · [Memory](https://ejentum.com/docs/memory_harness)

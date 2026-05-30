@@ -43,7 +43,7 @@ For this workflow, the orchestrator fires three sub-agent calls in one turn afte
 
 Each agent has an `mcpConnections` field that accepts `stdio`, `sse`, or `streamable_http` MCP servers. Tools served by connected MCP servers appear as native tools on the agent alongside any Python tools and canvas-node tools. For this workflow that means the Ejentum harness is dropped in per-sub-agent with a single config block: no Python wrapper, no HTTP plumbing, no MCP-client-library install.
 
-The `streamable_http` transport (introduced in heym v0.0.30) is the right choice here. The earlier `stdio + npx -y ejentum-mcp` path has a cold-start delay inside heym's container that can return an empty tools list and silently leave the sub-agent without harness access. `streamable_http` against `https://api.ejentum.com/mcp` returns four `harness_*` tools in roughly 200ms with no subprocess spawn.
+The `streamable_http` transport (introduced in heym v0.0.30) is the right choice here. The earlier `stdio + npx -y ejentum-mcp` path has a cold-start delay inside heym's container that can return an empty tools list and silently leave the sub-agent without harness access. `streamable_http` against `https://api.ejentum.com/mcp` returns four tools (`reasoning`, `code`, `anti-deception`, `memory`) in roughly 200ms with no subprocess spawn.
 
 ### 3. Deterministic Python tool sandbox
 
@@ -76,11 +76,11 @@ triageOrchAgent  (z-ai/glm-5.1, isOrchestrator=true)
    └── false → parallel call_sub_agent (one turn, three tool calls):
          │
          ├── interpreterAgent   (qwen3-max-thinking)
-         │     ▸ harness_reasoning            (MCP, ejentum)
+         │     ▸ reasoning            (MCP, ejentum)
          │     ▸ fetchPubmedSearch            (HTTP canvas tool)
          │
          ├── doctorpushAgent    (claude-opus-4)
-         │     ▸ harness_anti_deception       (MCP, ejentum)
+         │     ▸ anti-deception       (MCP, ejentum)
          │     ▸ fetchNihConditions           (HTTP canvas tool)
          │     ▸ fetchNihLabTests             (HTTP canvas tool)
          │
@@ -96,8 +96,8 @@ triageOrchAgent  (z-ai/glm-5.1, isOrchestrator=true)
 | Agent | Role | Model | Python tool | MCP harness | HTTP canvas tools |
 |---|---|---|---|---|---|
 | triageOrchAgent | Safety gate + parallel fan-out + integration | `z-ai/glm-5.1` (temp 0.0) | check_critical_values | (none) | (none) |
-| interpreterAgent | Plain-language explainer per abnormal marker | `qwen/qwen3-max-thinking` | (none) | harness_reasoning | fetchPubmedSearch |
-| doctorpushAgent | Questions to push the doctor on, no reassurance | `anthropic/claude-opus-4` (temp 0.1) | (none) | harness_anti_deception | fetchNihConditions, fetchNihLabTests |
+| interpreterAgent | Plain-language explainer per abnormal marker | `qwen/qwen3-max-thinking` | (none) | reasoning | fetchPubmedSearch |
+| doctorpushAgent | Questions to push the doctor on, no reassurance | `anthropic/claude-opus-4` (temp 0.1) | (none) | anti-deception | fetchNihConditions, fetchNihLabTests |
 | differentialAgent | 3-5 conditions consistent with pattern, each with confirm/rule-out | `deepseek/deepseek-r1` (temp 0.3) | (none) | (none) | (none) |
 
 ---
@@ -139,9 +139,9 @@ To add a marker, edit `tools/check_critical_values.py`: add an entry to `PANIC` 
 
 ## Why Ejentum MCP for the medical use case
 
-The two cognitive harnesses attached via MCP (`harness_reasoning` on interpreterAgent, `harness_anti_deception` on doctorpushAgent) are not decorative. Each one addresses a specific medical-LLM failure mode that no system prompt alone reliably suppresses.
+The two cognitive harnesses attached via MCP (`reasoning` on interpreterAgent, `anti-deception` on doctorpushAgent) are not decorative. Each one addresses a specific medical-LLM failure mode that no system prompt alone reliably suppresses.
 
-### `harness_reasoning` on interpreterAgent
+### `reasoning` on interpreterAgent
 
 The interpreter's job is to translate a numeric lab value into plain-language meaning without crossing into diagnosis. The default LLM failure mode here is **overconfident interpretation**: the model trained on millions of medical texts treats "hemoglobin 8.5 g/dL" as a known pattern and generates a smoothed-out explanation that conflates "consistent with anemia" with "you have anemia."
 
@@ -156,7 +156,7 @@ The reasoning harness retrieves an engineered reasoning scaffold per call from t
 
 The interpreter absorbs the scaffold internally before writing its reply (the system prompt enforces "do not echo bracket labels"). Output is shaped by the scaffold's discipline without exposing scaffold vocabulary to the patient.
 
-### `harness_anti_deception` on doctorpushAgent
+### `anti-deception` on doctorpushAgent
 
 The second-opinion voice's job is to refuse false reassurance, which is the failure mode patient-facing medical AI is most prone to and the one with the highest cost (false reassurance delays care). The anti-deception harness retrieves abilities from the 139-ability anti-deception collection, engineered specifically to block:
 
@@ -170,14 +170,14 @@ In a representative run on the CRAB-minus-bone panel (hemoglobin 9.5 + creatinin
 
 ### Why these two and not the other public harnesses
 
-- `harness_code` is engineered for software-engineering failure modes (invariant violations, environment drift, API surface mismatch). Inapplicable to lab interpretation.
-- `harness_memory` is engineered for perception sharpening across turns (what changed, what's stable, behavioral calibration). This workflow is single-turn, so the memory harness's discipline has no turn-to-turn signal to work on.
+- `code` is engineered for software-engineering failure modes (invariant violations, environment drift, API surface mismatch). Inapplicable to lab interpretation.
+- `memory` is engineered for perception sharpening across turns (what changed, what's stable, behavioral calibration). This workflow is single-turn, so the memory harness's discipline has no turn-to-turn signal to work on.
 
 Adding either would dilute the cognitive specialization without adding signal. The differential agent uses no harness because the role is pure structured enumeration that DeepSeek R1's native chain-of-thought handles well, and R1 has unreliable tool-calling on this version of heym anyway.
 
 ### Why MCP and not the REST endpoint
 
-Both are available. The REST endpoint at `https://ejentum-main-ab125c3.zuplo.app/logicv1/` takes `{"query": "...", "mode": "reasoning|anti-deception|code|memory"}` and returns the same scaffold structure. MCP is the better fit here because heym's agent node has a first-class MCP client: tools list at startup, schemas auto-registered, scaffold injection in the agent's tool-call loop, no curl wrangling.
+Both are available. The REST endpoint at `https://api.ejentum.com/harness/` takes `{"query": "...", "mode": "reasoning|anti-deception|code|memory"}` and returns the same scaffold structure. MCP is the better fit here because heym's agent node has a first-class MCP client: tools list at startup, schemas auto-registered, scaffold injection in the agent's tool-call loop, no curl wrangling.
 
 For runtimes without an MCP client (n8n, custom Python loops, legacy HTTP-only stacks), the REST gateway is the canonical path.
 
@@ -201,7 +201,7 @@ Stacking cross-lab diversity with cognitive harnesses gives two independent laye
 ## Prerequisites
 
 - **heym instance, v0.0.30+** (self-hosted via Docker). Earlier versions lack the `streamable_http` MCP transport, parallel sub-agent execution, and the Python tool sandbox features this template uses.
-- **Ejentum API key.** Free tier (100 calls total) at [ejentum.com/pricing](https://ejentum.com/pricing). Used by interpreterAgent and doctorpushAgent for their cognitive harnesses.
+- **Ejentum API key.** 30-day free trial at [ejentum.com/pricing](https://ejentum.com/pricing); adaptive tools require Go or Super tier. Used by interpreterAgent and doctorpushAgent for their cognitive harnesses.
 - **LLM credentials in heym** for each agent's model. All four models are reachable via a single OpenRouter credential if you prefer, or you can wire each to its native API key (Anthropic, Zhipu, Alibaba, DeepSeek).
 
 ---
@@ -237,7 +237,7 @@ For each of the two harnessed sub-agents, open the node and add an MCP connectio
 | Timeout | `30` |
 | Label | `ejentum` |
 
-Click **Fetch tools** after saving. You should see four `harness_*` tools listed. Each sub-agent's HARD RULE 1 (tool lockout) enforces use of only the one assigned harness even though all four are visible.
+Click **Fetch tools** after saving. You should see four tools listed (`reasoning`, `code`, `anti-deception`, `memory`). Each sub-agent's HARD RULE 1 (tool lockout) enforces use of only the one assigned harness even though all four are visible.
 
 **Do NOT use the stdio transport** (`npx -y ejentum-mcp`). The stdio path has a cold-start delay inside heym's container that can cause the tools list to return empty or late, leaving the sub-agent without harness tools at runtime.
 
@@ -307,7 +307,7 @@ Sodium 140 mEq/L
 Calcium 11.4 mg/dL
 ```
 
-**Expected:** 0 critical / 3 abnormal / 5 normal. The anemia + hypercalcemia + elevated-creatinine pattern is a CRAB-minus-bone constellation that should surface multiple myeloma in the differential, prompting doctorpushAgent to ask about SPEP, free light chains, and PTH, and prompting the interpreter to ground its explanation in literature. Use this test to verify that the MCP harness fires end-to-end (check each sub-agent's `tool_calls` array; you should see `harness_anti_deception` with `source: "mcp", mcp_server: "ejentum"` on doctorpushAgent and `harness_reasoning` similarly on interpreterAgent).
+**Expected:** 0 critical / 3 abnormal / 5 normal. The anemia + hypercalcemia + elevated-creatinine pattern is a CRAB-minus-bone constellation that should surface multiple myeloma in the differential, prompting doctorpushAgent to ask about SPEP, free light chains, and PTH, and prompting the interpreter to ground its explanation in literature. Use this test to verify that the MCP harness fires end-to-end (check each sub-agent's `tool_calls` array; you should see `anti-deception` with `source: "mcp", mcp_server: "ejentum"` on doctorpushAgent and `reasoning` similarly on interpreterAgent).
 
 ### Test 4: no lab values (declination path)
 
@@ -367,11 +367,11 @@ Inside each sub-agent's own `node_results.tool_calls` array (visible if you expa
 
 ```
 interpreterAgent.tool_calls:
-  - harness_reasoning           (source: "mcp", mcp_server: "ejentum", ~1000ms)
+  - reasoning           (source: "mcp", mcp_server: "ejentum", ~1000ms)
   - fetchPubmedSearch           (source: "node_tool", ~300ms)         [optional, when scaffold justifies literature lookup]
 
 doctorpushAgent.tool_calls:
-  - harness_anti_deception      (source: "mcp", mcp_server: "ejentum", ~1000ms)
+  - anti-deception      (source: "mcp", mcp_server: "ejentum", ~1000ms)
   - fetchNihConditions          (source: "node_tool", ~300ms)         [optional]
   - fetchNihLabTests            (source: "node_tool", ~300ms)         [optional]
 
@@ -379,7 +379,7 @@ differentialAgent.tool_calls:
   (empty — no tools)
 ```
 
-If the harness calls show up as `source: "mcp", mcp_server: "ejentum"` with the scaffold returned in `result`, the MCP attachment is wired correctly. If `harness_*` calls are absent from a harnessed sub-agent's trace, the MCP attachment is misconfigured (most common cause: stdio transport hung on cold-start; fix by switching to streamable_http per Setup step 4).
+If the harness calls show up as `source: "mcp", mcp_server: "ejentum"` with the scaffold returned in `result`, the MCP attachment is wired correctly. If the tool calls are absent from a harnessed sub-agent's trace, the MCP attachment is misconfigured (most common cause: stdio transport hung on cold-start; fix by switching to streamable_http per Setup step 4).
 
 On the emergency path (Test 2), the orchestrator's `tool_calls` should contain exactly ONE entry: `check_critical_values`. No `call_sub_agent` calls. No sub-agent node_results in the output. Wall time roughly 5-10s.
 
@@ -402,8 +402,8 @@ The Parameters field on the Python tool is malformed. heym accepts only the inne
 **`Tool error: Tool code contains a restricted Python introspection primitive`.**
 heym's Python tool sandbox blocks `urllib.request.*`, `type(e).__name__`, `getattr`/`setattr` on arbitrary objects, and similar introspection primitives. Keep Python tools pure stdlib without network IO and without exception introspection. Use canvas HTTP nodes for any external fetch.
 
-**Sub-agents produce output but the trace shows no `harness_*` calls.**
-MCP attachment is configured but ejentum tools are not being fetched. Verify the MCP block uses **streamable_http** transport against `https://api.ejentum.com/mcp` with bearer auth. The stdio path with `npx -y ejentum-mcp` has a cold-start delay that can cause the tools list to return empty. Click **Fetch tools** in the agent's MCP UI and confirm four `harness_*` tools appear before running.
+**Sub-agents produce output but the trace shows no tool calls.**
+MCP attachment is configured but ejentum tools are not being fetched. Verify the MCP block uses **streamable_http** transport against `https://api.ejentum.com/mcp` with bearer auth. The stdio path with `npx -y ejentum-mcp` has a cold-start delay that can cause the tools list to return empty. Click **Fetch tools** in the agent's MCP UI and confirm four tools (`reasoning`, `code`, `anti-deception`, `memory`) appear before running.
 
 **Orchestrator returns `Upstream triage did not return a valid panel`.**
 The Python tool returned an error or threw an exception. Check the `triageOrchAgent`'s `tool_calls` array in the trace; the error message will be in the `result.error` field. Common causes: malformed Parameters schema, restricted Python primitive, or a tool-execution timeout.
@@ -429,8 +429,8 @@ GLM 5.1 is the cheapest reliable option for the merged role and handles parallel
 ### Cost-optimizing the sub-agents
 
 The current line-up favors quality over cost. Cheap alternative:
-- interpreterAgent: `deepseek/deepseek-v3` (keeps harness_reasoning)
-- doctorpushAgent: `z-ai/glm-5.1` (keeps harness_anti_deception)
+- interpreterAgent: `deepseek/deepseek-v3` (keeps reasoning)
+- doctorpushAgent: `z-ai/glm-5.1` (keeps anti-deception)
 - differentialAgent: `z-ai/glm-5.1` or `deepseek/deepseek-v3`
 
 Verify role discipline holds on the verification test set after any swap.
@@ -469,7 +469,7 @@ MIT. See [LICENSE](../LICENSE).
 ## Credits
 
 - [heym](https://github.com/heymrun/heym) by [@heymrun](https://github.com/heymrun) — open-source multi-agent automation platform. The four runtime primitives this template depends on (parallel sub-agent orchestration, `streamable_http` MCP client, deterministic Python tool sandbox, canvas-node-as-tool wiring) are all native to heym; none of the architecture above is possible without them.
-- [Ejentum Logic API](https://ejentum.com) — cognitive harnesses (`harness_reasoning`, `harness_anti_deception`) attached via MCP to the two specialist roles where they earn their keep. Engineered scaffolds against the 311-ability reasoning collection and the 139-ability anti-deception collection.
+- [Ejentum API](https://ejentum.com) — cognitive harnesses (`reasoning`, `anti-deception`) attached via MCP to the two specialist roles where they earn their keep. Engineered scaffolds against the 311-ability reasoning collection and the 139-ability anti-deception collection.
 - Panic-value thresholds from standard US hospital lab callback policies.
 - Cross-lab agent diversity: Anthropic, Alibaba, Zhipu, DeepSeek.
 

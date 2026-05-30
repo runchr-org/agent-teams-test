@@ -3,7 +3,7 @@ Ejentum Multi-Turn Agent-vs-Agent Eval Orchestrator
 
 Python port of the n8n `reasoning_+_anti_deception_agent_vs_agent_eval_workflow`.
 Runs a scripted multi-turn conversation through two parallel GPT-4.1 agents (one
-baseline, one with an Ejentum Logic API tool available), then scores the full
+baseline, one with an Ejentum API tool available), then scores the full
 conversations with a blind Gemini 3 Flash Preview judge on seven dimensions.
 
 - Agent A (baseline): plain producer model, per-turn session memory, no tools
@@ -53,7 +53,7 @@ from pathlib import Path
 from typing import Any
 
 ROOT = Path(__file__).parent
-DEFAULT_EJENTUM_URL = "https://ejentum-main-ab125c3.zuplo.app/logicv1/"
+DEFAULT_EJENTUM_URL = "https://api.ejentum.com/harness/"
 
 # Matches n8n agent node `maxIterations: 10` on the shipping workflow.
 # The augmented agent may call the tool 0, 1, or 2 times per turn in normal

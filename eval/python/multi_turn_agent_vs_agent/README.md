@@ -1,6 +1,6 @@
 # Multi-Turn Agent-vs-Agent Eval (Python)
 
-Python port of the flagship n8n workflow [`../../n8n/agent_vs_agent_multi_turn/`](../../n8n/agent_vs_agent_multi_turn/). Runs a scripted multi-turn conversation through two parallel GPT-4.1 agents (one baseline, one with the Ejentum Logic API tool available), then scores the full conversations with a blind Gemini 3 Flash Preview judge on seven dimensions.
+Python port of the flagship n8n workflow [`../../n8n/agent_vs_agent_multi_turn/`](../../n8n/agent_vs_agent_multi_turn/). Runs a scripted multi-turn conversation through two parallel GPT-4.1 agents (one baseline, one with the Ejentum API tool available), then scores the full conversations with a blind Gemini 3 Flash Preview judge on seven dimensions.
 
 Zero runtime dependencies beyond the Python standard library. Importable as a module (IDE agents, MCP servers, notebooks) and runnable as a CLI.
 
@@ -72,7 +72,7 @@ Drop a new file into `scenarios/`. Pass its path to the CLI, or import the `scen
 ## What the orchestrator does per turn
 
 1. **Agent A** (baseline): receives the turn's customer input, appends to its own session history, calls the producer model with the baseline system prompt, returns a response. No tools.
-2. **Agent B** (augmented): receives the same customer input, appends to its own session history, calls the producer model with the augmented system prompt and the `ejentum_logic_api` tool available. The agent decides whether to call the tool 0, 1, or 2 times per turn (the augmented system prompt teaches it when to stack reasoning + anti-deception). Tool calls are executed against the real Ejentum Logic API and results are injected back into the conversation before the final response.
+2. **Agent B** (augmented): receives the same customer input, appends to its own session history, calls the producer model with the augmented system prompt and the `ejentum_logic_api` tool available. The agent decides whether to call the tool 0, 1, or 2 times per turn (the augmented system prompt teaches it when to stack reasoning + anti-deception). Tool calls are executed against the real Ejentum API and results are injected back into the conversation before the final response.
 3. Both responses are recorded per turn. Session memory persists across turns on both sides.
 
 After all turns complete, both full conversations are formatted with neutral `AGENT A` / `AGENT B` labels and sent to the blind Gemini judge. The judge returns a structured JSON verdict on seven dimensions.

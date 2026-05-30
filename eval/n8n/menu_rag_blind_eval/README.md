@@ -4,7 +4,7 @@
 
 ## What this is
 
-An open-source n8n workflow that evaluates whether a runtime reasoning harness reduces fabrication and over-confidence in a RAG agent. The pattern: two identical agent producers run against the same retrieval source, the only difference being whether one has the Ejentum Logic API wired in as a runtime tool. Four blind judges from four different labs (Moonshot, Anthropic, MiniMax, DeepSeek) score both responses on a five-dimension rubric. A deterministic aggregator computes per-judge totals, cross-judge agreement, per-dimension and per-question deltas, and a synthesizer agent produces a markdown findings document.
+An open-source n8n workflow that evaluates whether a runtime reasoning harness reduces fabrication and over-confidence in a RAG agent. The pattern: two identical agent producers run against the same retrieval source, the only difference being whether one has the Ejentum API wired in as a runtime tool. Four blind judges from four different labs (Moonshot, Anthropic, MiniMax, DeepSeek) score both responses on a five-dimension rubric. A deterministic aggregator computes per-judge totals, cross-judge agreement, per-dimension and per-question deltas, and a synthesizer agent produces a markdown findings document.
 
 The workflow ships with a working example wired in: a 49-chunk Mediterranean bistro menu (the "Eolia" KB) and a ten-question test suite covering nine distinct failure modes (missing-field handling, conflict resolution, high-stakes allergen safety, out-of-scope queries, name-vs-ingredient mismatches, compound dietary constraints, undisclosed allergens, certification-grade safety, subjective fabrication traps). The published reference findings doc covers the second half of that suite (Q15 to Q19); the first half (Q5 to Q14) is included so anyone wanting to extend the scenario has the full set. Every node is visible and modifiable. Import it, learn how the pieces fit, then change anything you want: swap the menu, rewrite the questions, swap the judges, swap the rubric, fork the harness.
 
@@ -101,7 +101,7 @@ A and B are assigned neutrally to the baseline and augmented sides. The judges s
 
 ## Plug in your own tool
 
-The Ejentum Logic API is wired into the augmented producer as an example. To evaluate a different tool:
+The Ejentum API is wired into the augmented producer as an example. To evaluate a different tool:
 
 1. Delete the `Ejentum_Logic_API` HTTP Request Tool node connected to `rag_agent +harness`.
 2. Add your own tool node (HTTP Request Tool, MCP tool, or any n8n AI tool) and connect its `ai_tool` output to `rag_agent +harness`'s `ai_tool` input.
@@ -186,9 +186,9 @@ The seven-or-five-dimension rubric will not always discriminate cleanly. Some ju
 
 ## Learn more about the Ejentum tool
 
-The example workflow uses the Ejentum Logic API as the runtime reasoning harness on the augmented producer. None of the links below are required to run this workflow, but they explain what the tool actually is and how to call it from your own n8n flows:
+The example workflow uses the Ejentum API as the runtime reasoning harness on the augmented producer. None of the links below are required to run this workflow, but they explain what the tool actually is and how to call it from your own n8n flows:
 
-- **Home + free key (100 calls, no card):** [ejentum.com](https://ejentum.com)
+- **Home + free key (30-day trial, no card):** [ejentum.com](https://ejentum.com)
 - **n8n integration guide (HTTP node setup, header auth, mode selection, screenshots):** [ejentum.com/docs/n8n_guide](https://ejentum.com/docs/n8n_guide)
 - **API reference (request/response shape, mode catalog):** [ejentum.com/docs/api_reference](https://ejentum.com/docs/api_reference)
 - **Anti-Deception harness (the mode used here for safety/dietary/allergen/conflict questions):** [ejentum.com/docs/anti_deception](https://ejentum.com/docs/anti_deception)

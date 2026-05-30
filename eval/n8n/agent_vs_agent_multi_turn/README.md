@@ -6,7 +6,7 @@
 
 An open-source, educational n8n workflow that shows how to build a multi-turn agent evaluation end to end: scripted customer, parallel agents, blind judge, structured verdict, data table persistence. Every node is visible and modifiable. Import it, learn how the pieces fit, then change anything you want: swap the tool being tested, rewrite the rubric, change the judge model, rewrite the scenario, fork it into a three-way comparison. The pipeline is meant to be hacked on.
 
-The workflow ships with a working example inside: a Reasoning + Anti-Deception harness (Ejentum Logic API) wired into the augmented agent, and a six-turn founder-acquisition scenario. Keep both to see the workflow operate out of the box, or replace either. Ejentum is inside as an incentive to try a reasoning tool in the context of an eval. It is not required for the workflow to work: the Ejentum node is one HTTP tool, and any HTTP tool, MCP tool, or n8n AI tool drops into the same slot.
+The workflow ships with a working example inside: a Reasoning + Anti-Deception harness (Ejentum API) wired into the augmented agent, and a six-turn founder-acquisition scenario. Keep both to see the workflow operate out of the box, or replace either. Ejentum is inside as an incentive to try a reasoning tool in the context of an eval. It is not required for the workflow to work: the Ejentum node is one HTTP tool, and any HTTP tool, MCP tool, or n8n AI tool drops into the same slot.
 
 ## Why it exists
 
@@ -44,7 +44,7 @@ A and B are assigned neutrally to the baseline and augmented sides. The evaluato
 
 ## Plug in your own tool
 
-The Ejentum Logic API is wired into `agent+harness` as an example. To evaluate a different tool:
+The Ejentum API is wired into `agent+harness` as an example. To evaluate a different tool:
 
 1. Delete the `Ejentum_Logic_API` HTTP Request Tool node.
 2. Add your own tool node (HTTP Request Tool, MCP tool, or any n8n AI tool) and connect its `ai_tool` output to `agent+harness`'s `ai_tool` input.
@@ -138,9 +138,9 @@ Run multiple scenarios before forming an opinion. The seven-dimension rubric wil
 
 ## Learn more about the Ejentum tool
 
-The example workflow uses the Ejentum Logic API as the runtime reasoning harness on the augmented agent. None of the links below are required to run this workflow, but they explain what the tool actually is and how to call it from your own n8n flows:
+The example workflow uses the Ejentum API as the runtime reasoning harness on the augmented agent. None of the links below are required to run this workflow, but they explain what the tool actually is and how to call it from your own n8n flows:
 
-- **Home + free key (100 calls, no card):** [ejentum.com](https://ejentum.com)
+- **Home + free key (30-day trial, no card):** [ejentum.com](https://ejentum.com)
 - **n8n integration guide (HTTP node setup, header auth, mode selection, screenshots):** [ejentum.com/docs/n8n_guide](https://ejentum.com/docs/n8n_guide)
 - **API reference (request/response shape, mode catalog):** [ejentum.com/docs/api_reference](https://ejentum.com/docs/api_reference)
 - **Reasoning + Anti-Deception harness (the modes used in this workflow):** [Reasoning](https://ejentum.com/docs/reasoning_harness) · [Anti-Deception](https://ejentum.com/docs/anti_deception)

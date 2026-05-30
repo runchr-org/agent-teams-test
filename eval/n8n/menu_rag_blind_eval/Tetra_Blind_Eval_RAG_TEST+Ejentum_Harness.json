@@ -136,7 +136,7 @@
       "parameters": {
         "toolDescription": "Get cognitive reasoning scaffold. Use mode='anti-deception' for safety/allergen/dietary/out-of-scope questions. Use mode='reasoning' for multi-chunk synthesis.",
         "method": "POST",
-        "url": "=https://ejentum-main-ab125c3.zuplo.app/logicv1/",
+        "url": "=https://api.ejentum.com/harness/",
         "authentication": "genericCredentialType",
         "genericAuthType": "httpHeaderAuth",
         "sendBody": true,

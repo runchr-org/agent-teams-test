@@ -1,8 +1,8 @@
-# Adversarial Code Review — heym (v0.0.9+)
+# Adversarial Code Review — heym (v0.0.13+)
 
 ← [back to team overview](../README.md)
 
-A 4-agent multi-agent system for [heym](https://heym.run) (v0.0.9+) that performs adversarial code review. See the [team overview](../README.md) for the architecture and goal-tuning context.
+A 4-agent multi-agent system for [heym](https://heym.run) (v0.0.13+) that performs adversarial code review. See the [team overview](../README.md) for the architecture and goal-tuning context.
 
 > **What's heym?** An open-source multi-agent workflow platform (think n8n, but with first-class agent primitives): sub-agent delegation, agent memory graphs, and node-as-tool wiring where any node on the canvas can be exposed to an agent as a callable tool. Self-hostable via Docker. The repo lives at [github.com/heymrun/heym](https://github.com/heymrun/heym).
 
@@ -10,12 +10,14 @@ This template depends on heym v0.0.9's node-as-tool feature. Thanks to [@heymrun
 
 ![heym workflow canvas](screenshots/workflow_canvas.png)
 
+> [![On Heym Templates](https://img.shields.io/badge/Heym-Templates-2ea44f?logoColor=white)](https://heym.run/templates/adversarial-code-review) **One-click on Heym's templates gallery:** the canonical Heym-native install of this template lives at [heym.run/templates/adversarial-code-review](https://heym.run/templates/adversarial-code-review). Click **Import → Copy JSON**, paste into a fresh Heym canvas with Cmd/Ctrl+V, add credentials, run. Same JSON as `workflows/ejentum_code_review.json` in this repo; that file is the source-of-truth mirror for source control.
+
 ---
 
 ## Prerequisites
 
-- **heym instance, v0.0.9+** (self-hosted recommended). Earlier versions don't have node-as-tool.
-- **Ejentum API key**: free tier (100 calls total) at [ejentum.com/pricing](https://ejentum.com/pricing).
+- **heym instance, v0.0.13+** (self-hosted recommended). Earlier versions don't have node-as-tool.
+- **Ejentum API key**: 30-day free trial at [ejentum.com/pricing](https://ejentum.com/pricing); adaptive tools require Go or Super tier.
 - **LLM credentials in heym** for each agent's model (Anthropic, Google, OpenRouter for the Chinese models).
 
 ---
@@ -31,7 +33,12 @@ In heym → **Credentials** → **+ New Credential**:
 
 ### 2. Import the workflow
 
-In heym → **Workflows** → **Import** → select `workflows/ejentum_code_review.json`. The 8 canvas nodes import wired correctly.
+Two options:
+
+- **From Heym's templates gallery (fastest):** open [heym.run/templates/adversarial-code-review](https://heym.run/templates/adversarial-code-review), click **Import → Copy JSON**, paste into a fresh Heym canvas with Cmd/Ctrl+V.
+- **From this repo (for source control):** in heym → **Workflows** → **Import** → select `workflows/ejentum_code_review.json`.
+
+Either way, the 8 canvas nodes import wired correctly.
 
 ### 3. Drop skill files into sub-agents
 
@@ -160,5 +167,5 @@ MIT. See [LICENSE](../../LICENSE).
 ## Credits
 
 - [heym](https://github.com/heymrun/heym) by [@heymrun](https://github.com/heymrun) — open-source multi-agent orchestration platform with first-class sub-agent delegation, node-as-tool wiring, and built-in agent memory graphs. Capabilities like that aren't natively available in n8n or simpler workflow platforms.
-- [Ejentum Logic API](https://ejentum.com) — cognitive harnesses (reasoning, code, anti-deception) used by each specialist.
+- [Ejentum API](https://ejentum.com) — cognitive harnesses (reasoning, code, anti-deception) used by each specialist.
 - Cross-lab agent diversity: Anthropic, Google, Alibaba, Zhipu.

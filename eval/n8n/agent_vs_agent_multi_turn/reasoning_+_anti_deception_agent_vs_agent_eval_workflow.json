@@ -5,7 +5,7 @@
       "parameters": {
         "toolDescription": "This tool retrieves reasoning instructions ( not content to display )",
         "method": "POST",
-        "url": "https://ejentum-main-ab125c3.zuplo.app/logicv1/",
+        "url": "https://api.ejentum.com/harness/",
         "authentication": "genericCredentialType",
         "genericAuthType": "httpHeaderAuth",
         "sendHeaders": true,
@@ -52,7 +52,7 @@
     },
     {
       "parameters": {
-        "content": "       \n## Anti-Deception Harness Tool \n## Ejentum Logic API",
+        "content": "       \n## Anti-Deception Harness Tool \n## Ejentum API",
         "height": 352,
         "width": 304,
         "color": "#7E3E3E"

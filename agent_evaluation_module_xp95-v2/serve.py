@@ -15,7 +15,7 @@ import urllib.error
 import json
 
 PORT = 8000
-GATEWAY = "https://ejentum-main-ab125c3.zuplo.app/logicv1/"
+GATEWAY = "https://api.ejentum.com/harness/"
 
 
 class Handler(http.server.SimpleHTTPRequestHandler):

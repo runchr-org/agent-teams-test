@@ -16,9 +16,9 @@ Three agents in parallel, each on a different model lab, each in a locked role:
 
 | Agent | Model | Harness | Role | Hard rule |
 |---|---|---|---|---|
-| steelmanAgent | `openai/gpt-5-nano` | `harness_reasoning` | Strongest case FOR the method | Pure advocacy. Zero smuggled critique. |
-| stresstestAgent | `anthropic/claude-opus-4` | `harness_anti_deception` | Where the method BREAKS | Severity-tagged failure modes + concrete scenarios. |
-| gapfinderAgent | `z-ai/glm-4.7` | `harness_memory` | What is MISSING (steps + articulation depth) | Name 3 deeper implicit assumptions. |
+| steelmanAgent | `openai/gpt-5-nano` | `reasoning` | Strongest case FOR the method | Pure advocacy. Zero smuggled critique. |
+| stresstestAgent | `anthropic/claude-opus-4` | `anti-deception` | Where the method BREAKS | Severity-tagged failure modes + concrete scenarios. |
+| gapfinderAgent | `z-ai/glm-4.7` | `memory` | What is MISSING (steps + articulation depth) | Name 3 deeper implicit assumptions. |
 
 Output is structured JSON returned via heym's Output node. **No synthesizer agent.** The three voices are returned raw and the calling agent integrates them. The integration tension between the three perspectives IS the value — flattening it via consensus would defeat the purpose.
 
@@ -27,7 +27,7 @@ Output is structured JSON returned via heym's Output node. **No synthesizer agen
 ## Prerequisites
 
 - **heym instance, v0.0.20+** (self-hosted recommended). Earlier versions don't have the per-agent MCP attachment + Output-node JSON schema this template uses.
-- **Ejentum API key**: free tier (100 calls total) at [ejentum.com/pricing](https://ejentum.com/pricing).
+- **Ejentum API key**: 30-day free trial at [ejentum.com/pricing](https://ejentum.com/pricing); adaptive tools require Go or Super tier.
 - **LLM credentials in heym** for the three model labs:
   - Anthropic (for `claude-opus-4`)
   - OpenAI (for `gpt-5-nano`)
@@ -64,7 +64,7 @@ Each agent has its own MCP server config block (per-agent attachment, not workfl
 | Args | `["-y", "ejentum-mcp"]` |
 | Env | `{"EJENTUM_API_KEY": "<your-ejentum-key>"}` |
 
-Click **Fetch tools** — you should see 4 harness tools available (`harness_reasoning`, `harness_code`, `harness_anti_deception`, `harness_memory`). Each agent's system prompt enforces tool lockout to its assigned harness, so the other tools will not be called even though all four are visible.
+Click **Fetch tools** — you should see 4 harness tools available (`reasoning`, `code`, `anti-deception`, `memory`). Each agent's system prompt enforces tool lockout to its assigned harness, so the other tools will not be called even though all four are visible.
 
 ### 4. Verify the system prompts
 
@@ -212,5 +212,5 @@ MIT. See [LICENSE](../../LICENSE).
 ## Credits
 
 - [heym](https://github.com/heymrun/heym) by [@heymrun](https://github.com/heymrun) — open-source multi-agent orchestration platform. The per-agent MCP attachment and JSON-schema Output node added in v0.0.20 made this template's clean architecture possible.
-- [Ejentum Logic API](https://ejentum.com) — cognitive harnesses (reasoning, anti-deception, memory) optionally attached to each agent.
+- [Ejentum API](https://ejentum.com) — cognitive harnesses (reasoning, anti-deception, memory) optionally attached to each agent.
 - Cross-lab agent diversity: Anthropic, OpenAI, Zhipu.

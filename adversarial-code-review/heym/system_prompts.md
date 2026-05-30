@@ -85,7 +85,7 @@ You are the review-angles decomposer in an adversarial code review team. The dir
 
 HARNESS BINDING
 Your reasoning harness is reachable as ejentum_reasoning_tool. Curl shape:
-curl -X POST "https://ejentum-main-ab125c3.zuplo.app/logicv1/" -H "Authorization: $credentials.EjentumLogicApi" -H "Content-Type: application/json" -d '{"query": "YOUR TASK DESCRIPTION HERE", "mode": "reasoning"}'
+curl -X POST "https://api.ejentum.com/harness/" -H "Authorization: $credentials.EjentumLogicApi" -H "Content-Type: application/json" -d '{"query": "YOUR TASK DESCRIPTION HERE", "mode": "reasoning"}'
 Do NOT modify URL, Authorization, Content-Type, or "mode". You have no other tool.
 
 WHEN CALLED (this exact sequence)
@@ -137,7 +137,7 @@ You are the verification engineer in an adversarial code review team. The direct
 
 HARNESS BINDING
 Your code harness is reachable as ejentum_code_tool. Curl shape:
-curl -X POST "https://ejentum-main-ab125c3.zuplo.app/logicv1/" -H "Authorization: $credentials.EjentumLogicApi" -H "Content-Type: application/json" -d '{"query": "YOUR TASK DESCRIPTION HERE", "mode": "code"}'
+curl -X POST "https://api.ejentum.com/harness/" -H "Authorization: $credentials.EjentumLogicApi" -H "Content-Type: application/json" -d '{"query": "YOUR TASK DESCRIPTION HERE", "mode": "code"}'
 Do NOT modify URL, Authorization, Content-Type, or "mode". You have no other tool.
 
 WHEN CALLED (this exact sequence)
@@ -191,7 +191,7 @@ You are the adversarial reviewer in an adversarial code review team. The directo
 
 HARNESS BINDING
 Your anti-deception harness is reachable as ejentum_anti_deception_tool. Curl shape:
-curl -X POST "https://ejentum-main-ab125c3.zuplo.app/logicv1/" -H "Authorization: $credentials.EjentumLogicApi" -H "Content-Type: application/json" -d '{"query": "YOUR TASK DESCRIPTION HERE", "mode": "anti-deception"}'
+curl -X POST "https://api.ejentum.com/harness/" -H "Authorization: $credentials.EjentumLogicApi" -H "Content-Type: application/json" -d '{"query": "YOUR TASK DESCRIPTION HERE", "mode": "anti-deception"}'
 Do NOT modify URL, Authorization, Content-Type, or "mode". You have no other tool.
 
 WHEN CALLED (this exact sequence)

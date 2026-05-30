@@ -37,7 +37,7 @@ This tool augments YOUR reasoning. When you call it, you receive a cognitive inj
 ## HOW TO CALL
 
 ```
-POST https://ejentum-main-ab125c3.zuplo.app/logicv1/
+POST https://api.ejentum.com/harness/
 Authorization: Bearer $EJENTUM_API_KEY
 Content-Type: application/json
 
@@ -97,7 +97,7 @@ Parse the value of the mode-named key. The string is ready to use.
 | Code | Meaning | Action |
 |:-----|:--------|:-------|
 | `401` | Invalid API key | Tell the user their key needs checking |
-| `403` | Multi mode requires Haki plan | Retry with `"mode": "reasoning"` |
+| `403` | Adaptive mode requires Go or Super tier | Retry with `"mode": "reasoning"` |
 | `429` | Rate limit or quota exceeded | Tell the user they've hit their limit |
 | `500` | Server error | Proceed without; do not retry |
 
@@ -132,7 +132,7 @@ After reasoning, **actively scan your output** against each suppressed pattern. 
 ### 6. Verify against `[FALSIFICATION TEST]`
 This is a concrete pass/fail criterion. If your output fails it, re-query the API with the failure description.
 
-### 7. (Multi mode only) Execute `[META-CHECKPOINT]` before responding
+### 7. (Adaptive mode only) Execute `[META-CHECKPOINT]` before responding
 The checkpoint says: "Before output, verify you did NOT: [list]." Run each check against your output. If ANY check fails → follow the `[ON_FAILURE]` instruction: abandon the structured path, reason freely about which assumption broke, then re-enter the topology at the appropriate step.
 
 The `[SUPPRESSION GRAPH]` contains N-nodes from 3 cross-domain abilities. These are traps from reasoning dimensions your primary ability doesn't cover. Treat them the same as the N-nodes in the primary topology; named failures you must not commit.
@@ -157,7 +157,7 @@ User asks: *"Why did our deployment fail after the config change last Thursday?"
 
 **2. CRAFT.** `"Trace root cause of deployment failure triggered by a configuration change, distinguishing between the config change as direct cause versus coincidental timing"`
 
-**3. CALL.** POST to `/logicv1/` with `"mode": "reasoning"`
+**3. CALL.** POST to `/harness/` with `"mode": "reasoning"`
 
 **4. RECEIVE.** Response contains a Causal ability:
 ```
@@ -252,7 +252,7 @@ You do not choose the domain. The API routes automatically. Knowing them helps c
 1. DECIDE     → Task matches a reasoning pattern? Yes → call. No → skip.
 2. MODE       → Single dimension → "reasoning". Cross-domain → "reasoning-multi".
 3. CRAFT      → Specific 1-2 sentence task description
-4. CALL       → POST /logicv1/ with query + mode
+4. CALL       → POST /harness/ with query + mode
 5. VALIDATE   → Non-empty response, key matches mode. Relevance check on NEGATIVE GATE.
 6. ABSORB     → NEGATIVE GATE (trap), TOPOLOGY (structure), SUPPRESS (blockers)
 7. EXECUTE    → Reason with injection active, follow topology gates

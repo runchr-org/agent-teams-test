@@ -367,9 +367,9 @@
         "authentication": "bearerAuth",
         "include": "selected",
         "includeTools": [
-          "harness_reasoning",
-          "harness_code",
-          "harness_memory"
+          "reasoning",
+          "code",
+          "memory"
         ],
         "options": {}
       },

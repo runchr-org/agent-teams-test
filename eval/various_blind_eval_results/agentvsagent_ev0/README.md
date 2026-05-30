@@ -13,7 +13,7 @@ Full script: [../../n8n/agent_vs_agent_multi_turn/reasoning_+_anti_deception_age
 - **Same model on both sides.** GPT-4.1 producer for A and B. Temperature 0.0. Per-turn session memory with a six-turn-pair window on both sides (matching the n8n `memoryBufferWindow` nodes).
 - **Different-family judge.** Google's gemini-3-flash-preview, not OpenAI. No same-family bias.
 - **Blind labels.** The judge sees `AGENT A` and `AGENT B` transcripts. The mapping to baseline/augmented is preserved only in the result artifact, never exposed to the judge.
-- **Only difference:** Agent B has the Ejentum Logic API wired in as an optional tool with three modes (`reasoning`, `reasoning-multi`, `anti-deception`). B decides per turn whether to call zero, one, or two times.
+- **Only difference:** Agent B has the Ejentum API wired in as an optional tool with three modes (`reasoning`, `reasoning-multi`, `anti-deception`). B decides per turn whether to call zero, one, or two times.
 
 Seven-dimension rubric (max 35 per agent): specificity, posture, drift resistance, diagnostic discipline, resolution quality, honesty, pattern enumeration. Rubric source: [../../n8n/agent_vs_agent_multi_turn/reasoning_+_anti_deception_agent_vs_agent_eval_workflow.json](../../n8n/agent_vs_agent_multi_turn/reasoning_+_anti_deception_agent_vs_agent_eval_workflow.json) (Blind_Eval system prompt), or [../../python/multi_turn_agent_vs_agent/system_prompts/blind_evaluator_v2.md](../../python/multi_turn_agent_vs_agent/system_prompts/blind_evaluator_v2.md).
 

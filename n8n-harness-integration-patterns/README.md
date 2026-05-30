@@ -97,9 +97,9 @@ If you measure the four branches on the same prompt, you will sometimes get four
 
 ## Learn more about the Ejentum tool
 
-The harness nodes in this workflow call Ejentum's Logic API. None of the links below are required to run the workflow, but they explain what the tool is and how to call it from your own n8n flows:
+The harness nodes in this workflow call Ejentum's Ejentum API. None of the links below are required to run the workflow, but they explain what the tool is and how to call it from your own n8n flows:
 
-- **Home + free key (100 calls, no card):** [ejentum.com](https://ejentum.com)
+- **Home + free key (30-day trial, no card):** [ejentum.com](https://ejentum.com)
 - **n8n integration guide (HTTP node setup, header auth, mode selection, screenshots):** [ejentum.com/docs/n8n_guide](https://ejentum.com/docs/n8n_guide)
 - **API reference (request/response shape, mode catalog):** [ejentum.com/docs/api_reference](https://ejentum.com/docs/api_reference)
 - **ejentum-mcp (MCP server, stdio + hosted HTTPS):** [github.com/ejentum/ejentum-mcp](https://github.com/ejentum/ejentum-mcp)

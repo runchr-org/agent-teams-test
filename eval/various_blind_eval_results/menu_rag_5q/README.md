@@ -6,7 +6,7 @@ This is a hands-on look at where LLM agents fabricate, where they over-hedge, an
 
 ## What we tested
 
-A Mediterranean bistro menu in Qdrant with 49 chunks and deliberate gaps: no systematic dietary tags, partial wine pairings, no calorie data, no chef commentary, plus a kitchen cross-contamination disclaimer. Two AI agents both running Claude Haiku 4.5, both with identical retrieval against the same Qdrant collection. The only difference: one agent had the Ejentum Logic API wired in as a runtime tool with a WHEN-TO-CALL clause for safety, dietary, out-of-scope, and conflict questions.
+A Mediterranean bistro menu in Qdrant with 49 chunks and deliberate gaps: no systematic dietary tags, partial wine pairings, no calorie data, no chef commentary, plus a kitchen cross-contamination disclaimer. Two AI agents both running Claude Haiku 4.5, both with identical retrieval against the same Qdrant collection. The only difference: one agent had the Ejentum API wired in as a runtime tool with a WHEN-TO-CALL clause for safety, dietary, out-of-scope, and conflict questions.
 
 Five questions covering five distinct failure modes:
 
@@ -79,7 +79,7 @@ Two of four judges (Kimi K2 and DeepSeek V4 Flash) scored the baseline ahead on 
 The eval workflow is at [n8n/menu_rag_blind_eval/](../../n8n/menu_rag_blind_eval/). The full setup:
 
 - A 49-chunk menu KB in Qdrant Cloud (gemini-embedding-2-preview, 3072 dimensions, INT8 cosine)
-- Two producer agents: Claude Haiku 4.5 with identical retrieval and identical system prompts, the only difference being whether the Ejentum Logic API is wired in as a tool
+- Two producer agents: Claude Haiku 4.5 with identical retrieval and identical system prompts, the only difference being whether the Ejentum API is wired in as a tool
 - Four blind judges from four different labs, each scoring on a five-dimension rubric
 - A format aggregator that computes deterministic stats and a synthesizer agent that produces the findings markdown
 
@@ -91,4 +91,4 @@ The raw judge output is in [judge_data.csv](judge_data.csv): one row per judge c
 
 ## Try it on your own agent
 
-The cleanest demonstration of whether the harness reduces fabrication on your specific use case is to run the same A/B against your own knowledge base. Wire the Ejentum Logic API into one copy of your agent, leave the other unchanged, run them against the questions you care about, score with whichever judge model you prefer. The instrument is the artifact. The numbers are yours to verify.
+The cleanest demonstration of whether the harness reduces fabrication on your specific use case is to run the same A/B against your own knowledge base. Wire the Ejentum API into one copy of your agent, leave the other unchanged, run them against the questions you care about, score with whichever judge model you prefer. The instrument is the artifact. The numbers are yours to verify.
